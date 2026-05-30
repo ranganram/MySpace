@@ -542,12 +542,26 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <!-- PLANNER -->
     <div class="page" id="page-planner">
       <div class="page-title">Planner</div>
-      <div class="page-sub">See the full year, plan the week</div>
-      <div class="seg" id="planner-seg">
-        <button class="seg-btn active" onclick="switchPlannerTab('year',this)">2025</button>
-        <button class="seg-btn" onclick="switchPlannerTab('year26',this)">2026</button>
-        <button class="seg-btn" onclick="switchPlannerTab('week',this)">Week</button>
+      <div class="page-sub">Year at a glance — week by week</div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <div class="seg" id="planner-ctx" style="margin-bottom:0">
+          <button class="seg-btn active" onclick="switchPlannerCtx('work',this)">🏢 Work</button>
+          <button class="seg-btn" onclick="switchPlannerCtx('personal',this)">🏠 Personal</button>
+        </div>
+        <div class="seg" id="planner-seg" style="margin-bottom:0">
+          <button class="seg-btn active" onclick="switchPlannerTab('year',this)">2025</button>
+          <button class="seg-btn" onclick="switchPlannerTab('year26',this)">2026</button>
+          <button class="seg-btn" onclick="switchPlannerTab('week',this)">Week</button>
+        </div>
       </div>
+
+      <div id="planner-ctx-label" style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+        <span id="planner-ctx-icon" style="font-size:18px">🏢</span>
+        <span id="planner-ctx-title" style="font-size:17px;font-weight:700;color:var(--text)">Work Planner</span>
+        <span id="planner-ctx-badge" class="badge badge-blue" style="font-size:11px">Work</span>
+      </div>
+
       <div id="planner-year-wrap"><div class="year-grid" id="planner-year"></div></div>
       <div id="planner-week-wrap" style="display:none">
         <div class="nav-bar">
@@ -908,26 +922,102 @@ function renderNotes(){
 // ══════════════════════════════════════════
 // PLANNER
 // ══════════════════════════════════════════
-let plannerTab='year',weekOffset=0;
+let plannerTab='year', plannerCtx='work', weekOffset=0;
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-function switchPlannerTab(t,el){plannerTab=t;document.querySelectorAll('#planner-seg .seg-btn').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');document.getElementById('planner-year-wrap').style.display=(t!=='week')?'block':'none';document.getElementById('planner-week-wrap').style.display=(t==='week')?'block':'none';renderPlanner();}
-function renderPlanner(){if(plannerTab==='week')renderWeek();else renderYear();}
-function renderYear(){
-  const yr=plannerTab==='year26'?2026:2025;const notes=S.go('planner_year');
-  document.getElementById('planner-year').innerHTML=MONTHS.map((m,i)=>{const key=`${yr}-${i}`;const val=notes[key]||'';return `<div class="month-cell ${val?'has-data':''}" id="mc-${key}"><div class="mc-month">${m}</div><div class="mc-text" id="mt-${key}">${val?esc(val):'<span style="color:var(--text4);font-size:11px;font-style:italic">Tap to plan...</span>'}</div><textarea class="mc-edit" placeholder="Plans for ${m} ${yr}..." onblur="saveMN('${key}',this.value)">${val}</textarea></div>`;}).join('');
-  document.querySelectorAll('.month-cell').forEach(cell=>{const ta=cell.querySelector('.mc-edit');const mt=cell.querySelector('.mc-text');cell.addEventListener('click',e=>{if(e.target===ta)return;mt.style.display='none';ta.style.display='block';ta.focus();});ta.addEventListener('blur',()=>{ta.style.display='none';mt.style.display='block';});});
+
+const CTX_META = {
+  work:     {icon:'🏢', title:'Work Planner',     badge:'badge-blue',   label:'Work',     color:'var(--accent)'},
+  personal: {icon:'🏠', title:'Personal Planner', badge:'badge-green',  label:'Personal', color:'var(--green)'}
+};
+
+function switchPlannerCtx(ctx, el){
+  plannerCtx = ctx;
+  document.querySelectorAll('#planner-ctx .seg-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  // Update label
+  const m = CTX_META[ctx];
+  document.getElementById('planner-ctx-icon').textContent = m.icon;
+  document.getElementById('planner-ctx-title').textContent = m.title;
+  const badge = document.getElementById('planner-ctx-badge');
+  badge.className = 'badge ' + m.badge;
+  badge.textContent = m.label;
+  renderPlanner();
 }
-function saveMN(key,val){const notes=S.go('planner_year');notes[key]=val;S.so('planner_year',notes);const mt=document.getElementById('mt-'+key);if(mt){mt.innerHTML=val?esc(val):'<span style="color:var(--text4);font-size:11px;font-style:italic">Tap to plan...</span>';}document.getElementById('mc-'+key)?.classList.toggle('has-data',!!val);}
+
+function switchPlannerTab(t,el){
+  plannerTab=t;
+  document.querySelectorAll('#planner-seg .seg-btn').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById('planner-year-wrap').style.display=(t!=='week')?'block':'none';
+  document.getElementById('planner-week-wrap').style.display=(t==='week')?'block':'none';
+  renderPlanner();
+}
+
+function renderPlanner(){if(plannerTab==='week')renderWeek();else renderYear();}
+
+function yearKey(yr, i){ return `${plannerCtx}_${yr}-${i}`; }
+function weekKey(ds){ return `${plannerCtx}_week_${ds}`; }
+
+function renderYear(){
+  const yr=plannerTab==='year26'?2026:2025;
+  const notes=S.go('planner_year');
+  const accentColor = CTX_META[plannerCtx].color;
+  document.getElementById('planner-year').innerHTML=MONTHS.map((m,i)=>{
+    const key=yearKey(yr,i); const val=notes[key]||'';
+    return `<div class="month-cell ${val?'has-data':''}" id="mc-${key}" style="${val?'border-color:'+accentColor+'55':''}">
+      <div class="mc-month" style="display:flex;align-items:center;justify-content:space-between">
+        <span>${m}</span>
+        ${val?`<span style="width:7px;height:7px;border-radius:50%;background:${accentColor};display:inline-block"></span>`:''}
+      </div>
+      <div class="mc-text" id="mt-${key}">${val?esc(val):'<span style="color:var(--text4);font-size:11px;font-style:italic">Tap to plan...</span>'}</div>
+      <textarea class="mc-edit" placeholder="Plans for ${m} ${yr}..." onblur="saveMN('${key}',this.value)">${val}</textarea>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.month-cell').forEach(cell=>{
+    const ta=cell.querySelector('.mc-edit');const mt=cell.querySelector('.mc-text');
+    cell.addEventListener('click',e=>{if(e.target===ta)return;mt.style.display='none';ta.style.display='block';ta.focus();});
+    ta.addEventListener('blur',()=>{ta.style.display='none';mt.style.display='block';});
+  });
+}
+
+function saveMN(key,val){
+  const notes=S.go('planner_year');notes[key]=val;S.so('planner_year',notes);
+  const mt=document.getElementById('mt-'+key);
+  const accentColor = CTX_META[plannerCtx].color;
+  if(mt){mt.innerHTML=val?esc(val):'<span style="color:var(--text4);font-size:11px;font-style:italic">Tap to plan...</span>';}
+  const cell=document.getElementById('mc-'+key);
+  if(cell){
+    cell.classList.toggle('has-data',!!val);
+    cell.style.borderColor = val ? accentColor+'55' : '';
+  }
+}
+
 function renderWeek(){
   const now=new Date();const dow=(now.getDay()+6)%7;const mon=new Date(now);mon.setDate(now.getDate()-dow+weekOffset*7);
   const days=Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
   const fmt=d=>`${MONTHS[d.getMonth()].slice(0,3)} ${d.getDate()}`;
+  const ctx = CTX_META[plannerCtx];
   document.getElementById('week-label').textContent=`${fmt(days[0])} — ${fmt(days[6])}, ${days[0].getFullYear()}`;
   const notes=S.go('planner_week');const tds=today();
-  document.getElementById('week-grid').innerHTML=days.map((d,i)=>{const ds=d.toISOString().slice(0,10);const isT=ds===tds;const val=notes[ds]||'';return `<div class="week-row ${isT?'is-today':''}"><div class="week-day-cell ${isT?'is-today':''}"><div class="wdc-dow">${DAYS[i].slice(0,3)}</div><div class="wdc-date">${d.getDate()}</div></div><div class="week-note-cell"><textarea placeholder="Plans for ${DAYS[i]}..." onblur="saveWN('${ds}',this.value)">${val}</textarea></div></div>`;}).join('');
+  document.getElementById('week-grid').innerHTML=days.map((d,i)=>{
+    const ds=d.toISOString().slice(0,10);
+    const isT=ds===tds;
+    const wk=weekKey(ds);
+    const val=notes[wk]||'';
+    return `<div class="week-row ${isT?'is-today':''}">
+      <div class="week-day-cell ${isT?'is-today':''}">
+        <div class="wdc-dow">${DAYS[i].slice(0,3)}</div>
+        <div class="wdc-date">${d.getDate()}</div>
+      </div>
+      <div class="week-note-cell">
+        <textarea placeholder="${ctx.icon} ${ctx.label} plans for ${DAYS[i]}..." onblur="saveWN('${wk}',this.value)">${val}</textarea>
+      </div>
+    </div>`;
+  }).join('');
 }
-function saveWN(ds,val){const n=S.go('planner_week');n[ds]=val;S.so('planner_week',n);}
+
+function saveWN(wk,val){const n=S.go('planner_week');n[wk]=val;S.so('planner_week',n);}
 
 // MISC
 let mEditId=null;
@@ -945,6 +1035,8 @@ function renderMisc(){
 // EXPORT / IMPORT
 // ══════════════════════════════════════════
 const DATA_KEYS = ['journal','habits','todos','reminders','notes','misc','planner_year','planner_week'];
+// Note: planner_year stores keys like 'work_2025-0', 'personal_2025-0' etc
+// planner_week stores keys like 'work_week_2025-01-06', 'personal_week_2025-01-06' etc
 
 function exportData(){
   const data = { version: 1, exported: new Date().toISOString(), data: {} };
