@@ -382,6 +382,29 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .log-note-text{font-size:13px;color:var(--text3);line-height:1.6;padding:10px 14px;background:var(--bg);border-radius:var(--radius-sm);white-space:pre-wrap;word-break:break-word;}
 .log-entry-actions{display:flex;gap:6px;margin-top:10px;}
 @media(max-width:680px){.log-tracker-actions{opacity:1;}}
+
+/* ── READING TARGET ── */
+.read-target-banner{background:linear-gradient(135deg,rgba(191,90,242,0.1),rgba(0,122,255,0.08));border:1.5px solid rgba(191,90,242,0.25);border-radius:var(--radius-xl);padding:18px 22px;margin-bottom:20px;}
+.read-target-title{font-size:16px;font-weight:800;color:var(--purple);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.read-target-progress{height:7px;background:var(--bg3);border-radius:100px;overflow:hidden;margin-bottom:12px;}
+.read-target-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--accent));border-radius:100px;transition:width 0.5s ease;}
+.read-target-items{display:flex;flex-direction:column;gap:6px;}
+.read-target-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);transition:var(--transition);}
+.read-target-item:hover{background:var(--surfaceHov);}
+.read-target-item.done-item{opacity:0.55;}
+.rt-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:var(--transition);color:transparent;background:transparent;flex-shrink:0;}
+.rt-check:hover{border-color:var(--purple);}
+.rt-check.done{background:var(--purple);border-color:var(--purple);color:#fff;}
+.rt-item-text{flex:1;font-size:14px;font-weight:600;color:var(--text);}
+.read-target-item.done-item .rt-item-text{text-decoration:line-through;color:var(--text3);}
+.rt-item-tab{font-size:11px;color:var(--text4);}
+.note-card.is-targeted{border-color:rgba(191,90,242,0.5);}
+.note-card.is-read{opacity:0.6;}
+.target-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;border:none;transition:var(--transition);font-family:var(--font);}
+.target-btn.set{background:var(--purple-bg);color:var(--purple);}
+.target-btn.set:hover{background:var(--purple);color:#fff;}
+.target-btn.unset{background:var(--bg3);color:var(--text3);}
+.target-btn.unset:hover{background:var(--red-bg);color:var(--red);}
 </style>
 </head>
 <body>
@@ -622,6 +645,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="page" id="page-notes">
       <div class="page-title">Notes</div>
       <div class="page-sub">Capture ideas before they escape</div>
+
+      <!-- READING TARGET FOR TODAY -->
+      <div id="read-target-wrap"></div>
+
       <div class="seg" id="notes-seg">
         <button class="seg-btn active" onclick="switchNotesTab('patent',this)">💡 Patent Ideas</button>
         <button class="seg-btn" onclick="switchNotesTab('topics',this)">🔗 Topics &amp; Links</button>
@@ -1250,12 +1277,95 @@ function addNote(){const title=document.getElementById('n-title').value.trim();i
 function editNote(id){const n=S.g('notes').find(x=>x.id===id);if(!n)return;document.getElementById('n-title').value=n.title;document.getElementById('n-body').value=n.body;document.getElementById('n-link').value=n.link||'';nEditId=id;document.getElementById('n-cancel-btn').style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'});}
 function cancelNEdit(){nEditId=null;document.getElementById('n-cancel-btn').style.display='none';['n-title','n-body','n-link'].forEach(id=>document.getElementById(id).value='');}
 function deleteNote(id){if(!confirm('Delete note?'))return;S.s('notes',S.g('notes').filter(n=>n.id!==id));renderNotes();}
+// ── READING TARGET ──
+function getReadTargets(){
+  const obj = S.go('read_targets'); // { date: { noteIds:[], done:{} } }
+  const tds = today();
+  if(!obj[tds]) obj[tds] = { noteIds:[], done:{} };
+  return obj;
+}
+
+function toggleReadTarget(noteId){
+  const arr = S.g('notes');
+  const n = arr.find(x=>x.id===noteId); if(!n) return;
+  const obj = getReadTargets(); const tds=today();
+  const idx = obj[tds].noteIds.indexOf(noteId);
+  if(idx>=0){ obj[tds].noteIds.splice(idx,1); delete obj[tds].done[noteId]; }
+  else { obj[tds].noteIds.push(noteId); }
+  S.so('read_targets', obj);
+  renderReadTargetBanner();
+  renderNotes();
+}
+
+function toggleReadDone(noteId){
+  const obj = getReadTargets(); const tds=today();
+  obj[tds].done[noteId] = !obj[tds].done[noteId];
+  S.so('read_targets', obj);
+  renderReadTargetBanner();
+  renderNotes();
+}
+
+function renderReadTargetBanner(){
+  const wrap = document.getElementById('read-target-wrap'); if(!wrap) return;
+  const obj = getReadTargets(); const tds=today();
+  const target = obj[tds];
+  const allNotes = S.g('notes');
+  const targetNotes = target.noteIds.map(id=>allNotes.find(n=>n.id===id)).filter(Boolean);
+  if(!targetNotes.length){ wrap.innerHTML=''; return; }
+  const doneCount = Object.values(target.done).filter(Boolean).length;
+  const total = targetNotes.length;
+  const pct = Math.round(doneCount/total*100);
+  const items = targetNotes.map(n=>`
+    <div class="read-target-item ${target.done[n.id]?'done-item':''}">
+      <div class="rt-check ${target.done[n.id]?'done':''}" onclick="toggleReadDone('${n.id}')">${target.done[n.id]?'✓':''}</div>
+      <div class="rt-item-text">${esc(n.title)}</div>
+      <div class="rt-item-tab">${n.tab}</div>
+      <button class="target-btn unset" onclick="toggleReadTarget('${n.id}')" title="Remove from today">✕</button>
+    </div>`).join('');
+  wrap.innerHTML=`<div class="read-target-banner">
+    <div class="read-target-title">
+      <span>📖 Reading Target — Today</span>
+      <span style="font-size:13px;font-weight:700;color:${pct===100?'var(--green)':'var(--purple)'}">${doneCount}/${total} done</span>
+    </div>
+    <div class="read-target-progress"><div class="read-target-fill" style="width:${pct}%"></div></div>
+    <div class="read-target-items">${items}</div>
+  </div>`;
+}
+
 function renderNotes(){
+  renderReadTargetBanner();
   const arr=S.g('notes').filter(n=>n.tab===notesTab);
   const list=document.getElementById('n-list');
   const tabLbl={patent:'Patent Ideas',topics:'Topics & Links',books:'Books to Read'};
   if(!arr.length){list.innerHTML=`<div class="empty"><div class="empty-icon">💡</div><div class="empty-title">Nothing here yet</div><div class="empty-sub">Add your first ${tabLbl[notesTab]}</div></div>`;return;}
-  list.innerHTML=`<div class="notes-grid">${arr.map((n,i)=>`<div class="note-card" style="--note-color:${NOTE_COLORS[i%NOTE_COLORS.length]}"><div class="note-card-title">${esc(n.title)}</div>${n.body?`<div class="note-card-body">${esc(n.body)}</div>`:''} ${n.link?`<a class="note-card-link" href="${esc(n.link)}" target="_blank" rel="noopener">🔗 ${esc(n.link)}</a>`:''}<div class="note-card-footer"><div class="note-card-date">${fmtD(n.created)}</div><div class="note-card-actions"><button class="icon-btn edit" onclick="editNote('${n.id}')">✎</button><button class="icon-btn" onclick="deleteNote('${n.id}')">✕</button></div></div></div>`).join('')}</div>`;
+  const obj = getReadTargets(); const tds=today();
+  const targeted = obj[tds].noteIds;
+  const done = obj[tds].done;
+  list.innerHTML=`<div class="notes-grid">${arr.map((n,i)=>{
+    const isTargeted = targeted.includes(n.id);
+    const isDone = !!done[n.id];
+    return `<div class="note-card ${isTargeted?'is-targeted':''} ${isDone?'is-read':''}" style="--note-color:${NOTE_COLORS[i%NOTE_COLORS.length]}">
+      ${isTargeted?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 12px;background:${isDone?'var(--green-bg)':'var(--purple-bg)'};border-radius:var(--radius-xs);">
+        <div class="rt-check ${isDone?'done':''}" onclick="toggleReadDone('${n.id}')" style="flex-shrink:0">${isDone?'✓':''}</div>
+        <span style="font-size:13px;font-weight:700;color:${isDone?'var(--green)':'var(--purple)'}">
+          ${isDone?'✅ Read — mark as unread':'📖 Tap ● to mark as read'}
+        </span>
+      </div>`:''}
+      <div class="note-card-title">${esc(n.title)}</div>
+      ${n.body?`<div class="note-card-body">${esc(n.body)}</div>`:''}
+      ${n.link?`<a class="note-card-link" href="${esc(n.link)}" target="_blank" rel="noopener">🔗 ${esc(n.link)}</a>`:''}
+      <div class="note-card-footer">
+        <div class="note-card-date">${fmtD(n.created)}</div>
+        <div class="note-card-actions">
+          <button class="target-btn ${isTargeted?'unset':'set'}" onclick="toggleReadTarget('${n.id}')">
+            ${isTargeted?'✕ Remove':'📖 Read Today'}
+          </button>
+          <button class="icon-btn edit" onclick="editNote('${n.id}')">✎</button>
+          <button class="icon-btn" onclick="deleteNote('${n.id}')">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
 }
 
 // ══════════════════════════════════════════
@@ -1432,6 +1542,13 @@ function renderDashboard(){
     {icon:'⏱', val:todayMins+'m', lbl:'Time Logged', sub:`${todayJournal.length} activit${todayJournal.length===1?'y':'ies'} today`, color:'var(--purple)', nav:'journal'},
     {icon:'🔁', val:habDoneToday+'/'+habits.length, lbl:'Habits Today', sub:`${habAvg}% avg this month`, color:'var(--green)', nav:'habits'},
     {icon:'💡', val:notes.length, lbl:'Notes Saved', sub:'Across all categories', color:'var(--teal)', nav:'notes'},
+    (()=>{
+      const rtObj=S.go('read_targets');const tds=today();
+      const rt=rtObj[tds]||{noteIds:[],done:{}};
+      const done=Object.values(rt.done).filter(Boolean).length;
+      const total=rt.noteIds.length;
+      return {icon:'📖',val:total?`${done}/${total}`:'—',lbl:'Reading Today',sub:total?`${Math.round(done/total*100)}% complete`:'Set targets in Notes',color:'var(--purple)',nav:'notes'};
+    })(),
   ];
 
   document.getElementById('dash-stats').innerHTML = statCards.map(c=>`
@@ -1781,7 +1898,7 @@ function initLog(){
 // ══════════════════════════════════════════
 // EXPORT / IMPORT
 // ══════════════════════════════════════════
-const DATA_KEYS = ['journal','habits','todos','reminders','notes','misc','planner_year','planner_week','log_trackers','log_entries'];
+const DATA_KEYS = ['journal','habits','todos','reminders','notes','misc','planner_year','planner_week','log_trackers','log_entries','read_targets'];
 // Note: planner_year stores keys like 'work_2025-0', 'personal_2025-0' etc
 // planner_week stores keys like 'work_week_2025-01-06', 'personal_week_2025-01-06' etc
 
