@@ -746,13 +746,99 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <script>
 // ══════════════════════════════════════════
-// STORAGE
+// SUPABASE CONFIG
+// ══════════════════════════════════════════
+const SB_URL  = 'https://koddmmoavkczmarfxdhq.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvZGRtbW9hdmtjem1hcmZ4ZGhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwODIxODUsImV4cCI6MjA5NTY1ODE4NX0.THHm2iFSYRVySRBvHZWf9AOf9O3eFkoeUky35gY0ZHg';
+const SB_UID  = 'f7968fef41e131e71bdf2bf294890131';
+const SB_HDR  = {
+  'Content-Type':  'application/json',
+  'apikey':        SB_KEY,
+  'Authorization': 'Bearer ' + SB_KEY,
+  'x-user-id':     SB_UID
+};
+
+// In-memory cache — loaded once on login, written through on every save
+const CACHE = {};
+let DB_READY = false;
+
+async function dbLoad(){
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/myspace_data?select=key,value&user_id=eq.${SB_UID}`,
+      { headers: SB_HDR }
+    );
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const rows = await res.json();
+    rows.forEach(r => CACHE[r.key] = r.value);
+    DB_READY = true;
+    console.log('Supabase loaded', Object.keys(CACHE).length, 'keys');
+  } catch(e) {
+    console.warn('Supabase load failed, using localStorage fallback', e);
+    DB_READY = false;
+  }
+}
+
+async function dbSave(key, value){
+  CACHE[key] = value;
+  localStorage.setItem('ms4_'+key, JSON.stringify(value));
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/myspace_data`, {
+      method:  'POST',
+      headers: { ...SB_HDR, 'Prefer': 'resolution=merge-duplicates' },
+      body:    JSON.stringify({ id: key, key, user_id: SB_UID, value, updated_at: new Date().toISOString() })
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    showToast('✓ Saved', 'success');
+  } catch(e) {
+    console.warn('Supabase save failed for', key, e);
+    showToast('✗ Save failed — stored locally', 'error');
+  }
+}
+
+// ── TOAST ──
+let toastTimer = null;
+function showToast(msg, type='success'){
+  let t = document.getElementById('db-toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'db-toast';
+    t.style.cssText = [
+      'position:fixed','bottom:24px','right:24px','z-index:9999',
+      'padding:10px 18px','border-radius:100px',
+      'font-family:var(--font)','font-size:13px','font-weight:600',
+      'box-shadow:0 4px 20px rgba(0,0,0,0.15)',
+      'transition:opacity 0.3s,transform 0.3s',
+      'pointer-events:none'
+    ].join(';');
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.background = type==='success' ? 'var(--green)' : 'var(--red)';
+  t.style.color = '#fff';
+  t.style.opacity = '1';
+  t.style.transform = 'translateY(0)';
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{
+    t.style.opacity='0';
+    t.style.transform='translateY(8px)';
+  }, 2500);
+}
+
+// ══════════════════════════════════════════
+// STORAGE — reads from cache (Supabase), writes to both
 // ══════════════════════════════════════════
 const S={
-  g:k=>{try{return JSON.parse(localStorage.getItem('ms4_'+k))||[];}catch{return[];}},
-  s:(k,v)=>localStorage.setItem('ms4_'+k,JSON.stringify(v)),
-  go:k=>{try{return JSON.parse(localStorage.getItem('ms4_'+k))||{};}catch{return{};}},
-  so:(k,v)=>localStorage.setItem('ms4_'+k,JSON.stringify(v))
+  g: k => {
+    if(DB_READY && CACHE[k] !== undefined) return Array.isArray(CACHE[k]) ? CACHE[k] : [];
+    try{ return JSON.parse(localStorage.getItem('ms4_'+k))||[]; }catch{ return []; }
+  },
+  s: (k,v) => { dbSave(k,v); },
+  go: k => {
+    if(DB_READY && CACHE[k] !== undefined) return (typeof CACHE[k]==='object'&&!Array.isArray(CACHE[k])) ? CACHE[k] : {};
+    try{ return JSON.parse(localStorage.getItem('ms4_'+k))||{}; }catch{ return {}; }
+  },
+  so: (k,v) => { dbSave(k,v); }
 };
 const uid=()=>Math.random().toString(36).slice(2,9);
 const today=()=>new Date().toISOString().slice(0,10);
@@ -853,16 +939,37 @@ function nav(p,el){
   if(p==='dashboard') renderDashboard();
   if(p==='log'){ initLog(); }
 }
-function initApp(){
+async function initApp(){
+  // Show loading overlay
+  const app = document.getElementById('app');
+  const loader = document.createElement('div');
+  loader.id = 'db-loader';
+  loader.style.cssText = 'position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px';
+  loader.innerHTML = '<div style="font-size:36px">⚡</div><div style="font-size:17px;font-weight:700;color:var(--text)">Loading your data...</div><div style="font-size:13px;color:var(--text3)">Connecting to Supabase</div>';
+  app.appendChild(loader);
+
+  // Load from Supabase
+  await dbLoad();
+
+  // Also copy Supabase data into localStorage as offline fallback
+  if(DB_READY){
+    Object.entries(CACHE).forEach(([k,v]) => localStorage.setItem('ms4_'+k, JSON.stringify(v)));
+  }
+
+  // Remove loader
+  loader.remove();
+
+  // Set defaults
   document.getElementById('j-date').value=today();
   const dt=new Date(); dt.setHours(dt.getHours()+1);
   document.getElementById('r-datetime').value=dt.toISOString().slice(0,16);
+  document.getElementById('le-date').value=today();
+
+  // Render everything
+  renderDashboard();
   renderJournal(); renderHabits(); renderTodos(); renderReminders(); renderNotes(); renderPlanner(); renderMisc();
   updateRemBadge();
-  renderDashboard();
   setInterval(()=>{updateRemBadge();renderReminders();renderDashboard();},60000);
-  // Init log defaults
-  document.getElementById('le-date').value=today();
 }
 
 // ══════════════════════════════════════════
@@ -1681,8 +1788,13 @@ const DATA_KEYS = ['journal','habits','todos','reminders','notes','misc','planne
 function exportData(){
   const data = { version: 1, exported: new Date().toISOString(), data: {} };
   DATA_KEYS.forEach(k => {
-    const raw = localStorage.getItem('ms4_'+k);
-    if(raw) data.data[k] = JSON.parse(raw);
+    // Prefer live cache from Supabase, fall back to localStorage
+    if(DB_READY && CACHE[k] !== undefined){
+      data.data[k] = CACHE[k];
+    } else {
+      const raw = localStorage.getItem('ms4_'+k);
+      if(raw) data.data[k] = JSON.parse(raw);
+    }
   });
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -1704,7 +1816,9 @@ function importData(event){
       const keys = Object.keys(src).filter(k => DATA_KEYS.includes(k));
       if(!keys.length){ alert('Invalid backup file — no recognisable data found.'); return; }
       if(!confirm(`Import ${keys.length} data sections?\n\nThis will REPLACE your current data with the backup.\n\nSections: ${keys.join(', ')}`)) return;
-      keys.forEach(k => S.s(k, src[k]));
+      // Save each key to Supabase + cache
+      const savePromises = keys.map(k => { CACHE[k]=src[k]; return dbSave(k, src[k]); });
+      Promise.all(savePromises).then(()=>console.log('Import saved to Supabase'));
       // Re-render everything
       renderJournal(); renderHabits(); renderTodos(); renderReminders(); renderNotes(); renderPlanner(); renderMisc(); updateRemBadge();
       alert(`✅ Import successful! ${keys.length} sections restored.`);
