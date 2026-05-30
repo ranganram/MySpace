@@ -386,12 +386,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="nav-icon-wrap" style="background:linear-gradient(135deg,#ffdcdc,#ffb0b0)">📎</div><span>Others</span>
       </div>
     </div>
-    <div class="sidebar-footer">
-      <div class="theme-toggle">
-        <button class="theme-option active" id="t-light" onclick="setTheme('light')">☀️</button>
-        <button class="theme-option" id="t-dark" onclick="setTheme('dark')">🌙</button>
+    <div class="sidebar-footer" style="flex-direction:column;gap:8px;align-items:stretch;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="theme-toggle">
+          <button class="theme-option active" id="t-light" onclick="setTheme('light')">☀️</button>
+          <button class="theme-option" id="t-dark" onclick="setTheme('dark')">🌙</button>
+        </div>
+        <button class="lock-btn" onclick="lockApp()">🔒 Lock</button>
       </div>
-      <button class="lock-btn" onclick="lockApp()">🔒 Lock</button>
+      <div style="display:flex;gap:6px;">
+        <button class="lock-btn" style="flex:1;justify-content:center;background:var(--green-bg);color:var(--green);border-radius:8px;" onclick="exportData()">⬇ Export</button>
+        <button class="lock-btn" style="flex:1;justify-content:center;background:var(--accent-bg);color:var(--accent);border-radius:8px;" onclick="document.getElementById('import-input').click()">⬆ Import</button>
+        <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
     </div>
   </aside>
 
@@ -597,8 +604,8 @@ const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 // To generate: https://emn178.github.io/online-tools/sha256.html
 // Current PIN: 12345
 // ══════════════════════════════════════════
-//const CORRECT_HASH = '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5';
 const CORRECT_HASH = '08903f3a246553e927dd860f962373005f4a281b374b1d20896562bb8177dfb3';
+
 async function hashPin(pin) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -908,7 +915,7 @@ function switchPlannerTab(t,el){plannerTab=t;document.querySelectorAll('#planner
 function renderPlanner(){if(plannerTab==='week')renderWeek();else renderYear();}
 function renderYear(){
   const yr=plannerTab==='year26'?2026:2025;const notes=S.go('planner_year');
-  document.getElementById('planner-year').innerHTML=MONTHS.map((m,i)=>{const key=`${yr}-${i}`;const val=notes[key]||'';return `<div class="month-cell ${val?'has-data':''}" id="mc-${key}"><div class="mc-month">${m}</div><div class="mc-text" id="mt-${key}">${val?esc(val):'<span style="color:var(--text4);font-size:11px;font-style:italic">Tap to plan...</span';return `<div class="month-cell ${val?'has-data':''}" id="mc-${key}"><div class="mc-month">${m}</div><div class="mc-text" id="mt-${key}">${val?esc(val):'<span style="color:var(--text4);font-size:11px;font-style:italic">Tap to plan...</span>'}</div><textarea class="mc-edit" placeholder="Plans for ${m} ${yr}..." onblur="saveMN('${key}',this.value)">${val}</textarea></div>`;}).join('');
+  document.getElementById('planner-year').innerHTML=MONTHS.map((m,i)=>{const key=`${yr}-${i}`;const val=notes[key]||'';return `<div class="month-cell ${val?'has-data':''}" id="mc-${key}"><div class="mc-month">${m}</div><div class="mc-text" id="mt-${key}">${val?esc(val):'<span style="color:var(--text4);font-size:11px;font-style:italic">Tap to plan...</span>'}</div><textarea class="mc-edit" placeholder="Plans for ${m} ${yr}..." onblur="saveMN('${key}',this.value)">${val}</textarea></div>`;}).join('');
   document.querySelectorAll('.month-cell').forEach(cell=>{const ta=cell.querySelector('.mc-edit');const mt=cell.querySelector('.mc-text');cell.addEventListener('click',e=>{if(e.target===ta)return;mt.style.display='none';ta.style.display='block';ta.focus();});ta.addEventListener('blur',()=>{ta.style.display='none';mt.style.display='block';});});
 }
 function saveMN(key,val){const notes=S.go('planner_year');notes[key]=val;S.so('planner_year',notes);const mt=document.getElementById('mt-'+key);if(mt){mt.innerHTML=val?esc(val):'<span style="color:var(--text4);font-size:11px;font-style:italic">Tap to plan...</span>';}document.getElementById('mc-'+key)?.classList.toggle('has-data',!!val);}
@@ -932,6 +939,50 @@ function renderMisc(){
   const arr=S.g('misc').slice().reverse();const list=document.getElementById('m-list');
   if(!arr.length){list.innerHTML=`<div class="empty"><div class="empty-icon">📎</div><div class="empty-title">Nothing yet</div><div class="empty-sub">Add your first note</div></div>`;return;}
   list.innerHTML=arr.map(n=>`<div class="misc-row"><div class="misc-bullet"></div><div class="misc-body-wrap">${n.title?`<div class="misc-title">${esc(n.title)}</div>`:''} ${n.body?`<div class="misc-body">${esc(n.body)}</div>`:''}<div class="misc-date">${fmtD(n.created)}</div></div><div class="misc-actions"><button class="icon-btn edit" onclick="editMisc('${n.id}')">✎</button><button class="icon-btn" onclick="deleteMisc('${n.id}')">✕</button></div></div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// EXPORT / IMPORT
+// ══════════════════════════════════════════
+const DATA_KEYS = ['journal','habits','todos','reminders','notes','misc','planner_year','planner_week'];
+
+function exportData(){
+  const data = { version: 1, exported: new Date().toISOString(), data: {} };
+  DATA_KEYS.forEach(k => {
+    const raw = localStorage.getItem('ms4_'+k);
+    if(raw) data.data[k] = JSON.parse(raw);
+  });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `myspace-backup-${date}.json`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function importData(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      // Support both raw format and wrapped {version, data} format
+      const src = parsed.version ? parsed.data : parsed;
+      const keys = Object.keys(src).filter(k => DATA_KEYS.includes(k));
+      if(!keys.length){ alert('Invalid backup file — no recognisable data found.'); return; }
+      if(!confirm(`Import ${keys.length} data sections?\n\nThis will REPLACE your current data with the backup.\n\nSections: ${keys.join(', ')}`)) return;
+      keys.forEach(k => S.s(k, src[k]));
+      // Re-render everything
+      renderJournal(); renderHabits(); renderTodos(); renderReminders(); renderNotes(); renderPlanner(); renderMisc(); updateRemBadge();
+      alert(`✅ Import successful! ${keys.length} sections restored.`);
+    } catch(err) {
+      alert('Failed to read file. Make sure it is a valid MySpace JSON backup.');
+    }
+    // Reset file input so same file can be re-imported if needed
+    event.target.value = '';
+  };
+  reader.readAsText(file);
 }
 </script>
 </body>
