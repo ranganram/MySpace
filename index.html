@@ -10,7 +10,7 @@
   --accent: #2563eb; --accent2: #5856d6;
   --green: #16a34a; --red: #e5484d; --orange: #f59e0b;
   --pink: #ff375f; --teal: #0ea5e9; --purple: #8b5cf6; --yellow: #ffd60a;
-  --radius-xl: 20px; --radius-lg: 16px; --radius: 14px; --radius-sm: 11px; --radius-xs: 9px;
+  --radius-xl: 14px; --radius-lg: 12px; --radius: 10px; --radius-sm: 9px; --radius-xs: 7px;
   --sidebar-w: 248px;
   --transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
 }
@@ -45,8 +45,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 /* ── LINE ICONS ── */
 svg.ic{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;width:1em;height:1em;display:block;flex-shrink:0;}
 .nav-icon-wrap .ic{width:19px;height:19px;}
-.dash-card-icon{color:var(--dc,var(--accent));}
-.dash-card-icon .ic{width:25px;height:25px;stroke-width:1.8;}
+.dash-card-icon{color:var(--text3);}
+.dash-card-icon .ic{width:20px;height:20px;stroke-width:1.8;}
 .dash-section-title [data-ic]{display:inline-flex;align-items:center;color:var(--text3);}
 .dash-section-title .ic{width:15px;height:15px;}
 .lock-icon .ic{width:34px;height:34px;color:#fff;stroke-width:1.5;}
@@ -82,8 +82,8 @@ svg.ic{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;strok
 /* ── SIDEBAR ── */
 .sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--surface2);backdrop-filter:blur(30px) saturate(1.8);-webkit-backdrop-filter:blur(30px) saturate(1.8);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:var(--transition);}
 .sidebar-header{padding:24px 18px 14px;}
-.sidebar-logo{font-size:19px;font-weight:700;letter-spacing:-0.4px;color:var(--text);display:flex;align-items:center;gap:9px;}
-.sidebar-logo::before{content:'';width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--purple));flex-shrink:0;box-shadow:0 2px 8px rgba(37,99,235,0.3);}
+.sidebar-logo{font-size:18px;font-weight:650;letter-spacing:-0.3px;color:var(--text);display:flex;align-items:center;gap:10px;}
+.sidebar-logo::before{content:'';width:24px;height:24px;border-radius:7px;background:var(--text);flex-shrink:0;}
 .sidebar-tagline{font-size:12px;color:var(--text4);margin-top:6px;margin-left:35px;font-weight:500;}
 .nav-group{padding:6px 10px 4px;flex:1;overflow-y:auto;}
 .nav-label{font-size:11px;font-weight:600;color:var(--text4);letter-spacing:0.4px;text-transform:uppercase;padding:12px 12px 6px;}
@@ -111,10 +111,10 @@ svg.ic{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;strok
 .page-sub{font-size:14px;color:var(--text3);margin-top:5px;margin-bottom:26px;}
 
 /* ── CARD ── */
-.card{background:var(--surface);border-radius:var(--radius-xl);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:16px;transition:var(--transition);}
-.card:hover{box-shadow:var(--shadow);}
-.card-padded{padding:22px 24px;}
-.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:18px 24px 0;}
+.card{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:none;overflow:hidden;margin-bottom:14px;transition:var(--transition);}
+.card:hover{border-color:var(--border);}
+.card-padded{padding:20px 22px;}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:16px 22px 0;}
 
 /* ── FORMS ── */
 .field{margin-bottom:14px;}
@@ -217,8 +217,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .streak-pct{min-width:44px;text-align:right;font-size:14px;font-weight:800;color:var(--green);}
 
 /* ── TASKS ── */
-.today-focus{background:linear-gradient(135deg,rgba(255,159,10,0.12),rgba(255,69,58,0.06));border:1.5px solid rgba(255,159,10,0.25);border-radius:var(--radius-xl);padding:22px 24px;margin-bottom:20px;}
-.today-focus-title{font-size:18px;font-weight:800;color:var(--orange);margin-bottom:14px;letter-spacing:-0.3px;}
+.today-focus{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;margin-bottom:18px;}
+.today-focus-title{font-size:13px;font-weight:600;color:var(--text3);margin-bottom:14px;letter-spacing:0.4px;text-transform:uppercase;}
 .today-empty{font-size:14px;color:var(--text3);}
 .todo-item{display:flex;align-items:flex-start;gap:14px;padding:16px 24px;border-bottom:1px solid var(--border2);transition:var(--transition);}
 .todo-item:last-child{border-bottom:none;}
@@ -319,16 +319,26 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 /* ── DASHBOARD ── */
 .dash-greeting{font-size:30px;font-weight:700;letter-spacing:-0.7px;line-height:1.15;margin-bottom:5px;}
 .dash-date{font-size:14px;color:var(--text3);margin-bottom:30px;}
-.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:28px;}
-.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 22px;box-shadow:var(--shadow-sm);cursor:pointer;transition:var(--transition);position:relative;overflow:hidden;}
-.dash-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
-.dash-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--dc,var(--accent));}
-.dash-card-icon{font-size:28px;margin-bottom:10px;}
-.dash-card-val{font-size:32px;font-weight:800;letter-spacing:-1px;color:var(--text);line-height:1;}
-.dash-card-lbl{font-size:12px;color:var(--text3);margin-top:4px;font-weight:500;}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:14px;}
+
+/* ── BENTO TILES ── */
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;min-width:0;}
+.tile.span2{grid-column:1 / -1;}
+.tile-head{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:14px 18px;border-bottom:1px solid var(--border2);}
+.tile-head [data-ic]{display:inline-flex;align-items:center;color:var(--text4);}
+.tile-head .ic{width:14px;height:14px;}
+.tile-count{margin-left:auto;font-size:11px;font-weight:500;color:var(--text4);text-transform:none;letter-spacing:0;}
+.tile-pad{padding:16px 18px;}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;box-shadow:none;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden;}
+.dash-card:hover{border-color:var(--text4);background:var(--surfaceHov);}
+.dash-card::before{display:none;}
+.dash-card-icon{font-size:28px;margin-bottom:14px;}
+.dash-card-val{font-size:30px;font-weight:700;letter-spacing:-1px;color:var(--text);line-height:1;}
+.dash-card-lbl{font-size:12px;color:var(--text2);margin-top:5px;font-weight:550;}
 .dash-card-sub{font-size:11px;color:var(--text4);margin-top:3px;}
 .dash-section{margin-bottom:28px;}
-.dash-section-title{font-size:13px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.dash-section-title{font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
 .dash-section-title span{font-size:11px;font-weight:500;color:var(--text4);text-transform:none;letter-spacing:0;}
 .dash-row-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--border2);transition:var(--transition);cursor:pointer;}
 .dash-row-item:last-child{border-bottom:none;}
@@ -347,7 +357,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .dash-hab-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),var(--teal));}
 .dash-hab-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);}
 .dash-empty{font-size:13px;color:var(--text4);padding:16px 20px;font-style:italic;}
-.dash-quote{background:linear-gradient(135deg,var(--accent-bg),var(--purple-bg));border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;margin-bottom:28px;}
+.dash-quote{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;margin-bottom:26px;}
 .dash-quote-text{font-size:15px;font-weight:500;color:var(--text);line-height:1.6;font-style:italic;}
 .dash-quote-src{font-size:12px;color:var(--text3);margin-top:8px;}
 
@@ -380,10 +390,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 @media(max-width:680px){.log-tracker-actions{opacity:1;}}
 
 /* ── READING TARGET ── */
-.read-target-banner{background:linear-gradient(135deg,rgba(191,90,242,0.1),rgba(0,122,255,0.08));border:1.5px solid rgba(191,90,242,0.25);border-radius:var(--radius-xl);padding:18px 22px;margin-bottom:20px;}
-.read-target-title{font-size:16px;font-weight:800;color:var(--purple);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
-.read-target-progress{height:7px;background:var(--bg3);border-radius:100px;overflow:hidden;margin-bottom:12px;}
-.read-target-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--accent));border-radius:100px;transition:width 0.5s ease;}
+.read-target-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;margin-bottom:18px;}
+.read-target-title{font-size:13px;font-weight:600;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;letter-spacing:0.4px;}
+.read-target-progress{height:6px;background:var(--bg3);border-radius:100px;overflow:hidden;margin-bottom:12px;}
+.read-target-fill{height:100%;background:var(--accent);border-radius:100px;transition:width 0.5s ease;}
 .read-target-items{display:flex;flex-direction:column;gap:6px;}
 .read-target-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);transition:var(--transition);}
 .read-target-item:hover{background:var(--surfaceHov);}
@@ -442,6 +452,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   .dash-card-lbl{font-size:11px;}
   .dash-card-sub{font-size:10px;}
   .dash-hab-grid{grid-template-columns:1fr 1fr;}
+  .bento{grid-template-columns:1fr;gap:12px;}
   .field-grid{grid-template-columns:1fr;}
 }
 
@@ -527,8 +538,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <button class="lock-btn" onclick="lockApp()"><span data-ic="lock"></span> Lock</button>
       </div>
       <div style="display:flex;gap:6px;">
-        <button class="lock-btn" style="flex:1;justify-content:center;background:var(--green-bg);color:var(--green);border-radius:8px;" onclick="exportData()"><span data-ic="download"></span> Export</button>
-        <button class="lock-btn" style="flex:1;justify-content:center;background:var(--accent-bg);color:var(--accent);border-radius:8px;" onclick="document.getElementById('import-input').click()"><span data-ic="upload"></span> Import</button>
+        <button class="lock-btn" style="flex:1;justify-content:center;background:var(--bg3);color:var(--text2);border-radius:8px;" onclick="exportData()"><span data-ic="download"></span> Export</button>
+        <button class="lock-btn" style="flex:1;justify-content:center;background:var(--bg3);color:var(--text2);border-radius:8px;" onclick="document.getElementById('import-input').click()"><span data-ic="upload"></span> Import</button>
         <input type="file" id="import-input" accept=".json" style="display:none" onchange="importData(event)">
       </div>
     </div>
@@ -543,25 +554,24 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div id="dash-date" class="dash-date"></div>
       <!-- STAT CARDS -->
       <div class="dash-grid" id="dash-stats"></div>
-      <!-- TODAY FOCUS -->
-      <div class="dash-section">
-        <div class="dash-section-title"><span data-ic="star"></span> Today's Focus <span id="dash-focus-count"></span></div>
-        <div class="card"><div id="dash-focus-list"></div></div>
-      </div>
-      <!-- OVERDUE REMINDERS -->
-      <div class="dash-section" id="dash-rem-section">
-        <div class="dash-section-title"><span data-ic="bell"></span> Reminders <span id="dash-rem-count"></span></div>
-        <div class="card"><div id="dash-rem-list"></div></div>
-      </div>
-      <!-- TODAY TIME -->
-      <div class="dash-section">
-        <div class="dash-section-title"><span data-ic="clock"></span> Today's Time Log <span id="dash-time-count"></span></div>
-        <div class="card"><div id="dash-time-body"></div></div>
-      </div>
-      <!-- HABITS -->
-      <div class="dash-section">
-        <div class="dash-section-title"><span data-ic="habits"></span> Habit Progress <span id="dash-hab-month"></span></div>
-        <div class="dash-hab-grid" id="dash-hab-grid"></div>
+      <!-- BENTO CARD GRID -->
+      <div class="bento">
+        <div class="tile">
+          <div class="tile-head"><span data-ic="star"></span> Today's Focus <span id="dash-focus-count" class="tile-count"></span></div>
+          <div id="dash-focus-list"></div>
+        </div>
+        <div class="tile" id="dash-rem-section">
+          <div class="tile-head"><span data-ic="bell"></span> Reminders <span id="dash-rem-count" class="tile-count"></span></div>
+          <div id="dash-rem-list"></div>
+        </div>
+        <div class="tile span2">
+          <div class="tile-head"><span data-ic="clock"></span> Today's Time Log <span id="dash-time-count" class="tile-count"></span></div>
+          <div id="dash-time-body"></div>
+        </div>
+        <div class="tile span2">
+          <div class="tile-head"><span data-ic="habits"></span> Habit Progress <span id="dash-hab-month" class="tile-count"></span></div>
+          <div class="tile-pad"><div class="dash-hab-grid" id="dash-hab-grid"></div></div>
+        </div>
       </div>
     </div>
 
@@ -1567,7 +1577,7 @@ function renderDashboard(){
 
   // Greeting
   const greet = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
-  document.getElementById('dash-greeting').textContent = greet + ' 👋';
+  document.getElementById('dash-greeting').textContent = greet;
 
   // Date
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
