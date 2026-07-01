@@ -342,6 +342,46 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .subtask-form-item{display:flex;align-items:center;gap:6px;padding:3px 0;}
 .subtask-progress{height:3px;background:var(--bg3);border-radius:100px;overflow:hidden;margin-top:5px;}
 .subtask-progress-fill{height:100%;background:var(--accent);border-radius:100px;transition:width 0.3s;}
+
+/* ── RECURRING TASKS ── */
+.recur-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border2);transition:var(--transition);}
+.recur-item:last-child{border-bottom:none;}
+.recur-item:hover{background:var(--surfaceHov);}
+.recur-name{font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.recur-days{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;}
+.recur-day{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:38px;}
+.recur-day-label{font-size:10px;font-weight:600;color:var(--text4);text-transform:uppercase;letter-spacing:0.3px;}
+.recur-day-time{font-size:11px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:2px 5px;text-align:center;cursor:pointer;min-width:36px;}
+.recur-day-time:hover{border-color:var(--accent);color:var(--accent);}
+.recur-day-time.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);font-weight:600;}
+.recur-day-time.inactive{color:var(--text4);}
+.recur-actions{opacity:0;transition:var(--transition);display:flex;gap:6px;flex-shrink:0;margin-left:auto;}
+.recur-item:hover .recur-actions{opacity:1;}
+@media(max-width:680px){.recur-actions{opacity:1;}}
+
+/* ── WATCH LIST ── */
+.watch-item{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;transition:var(--transition);}
+.watch-item:hover{border-color:var(--text4);}
+.watch-header{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;cursor:pointer;user-select:none;}
+.watch-status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.watch-title{font-size:13.5px;font-weight:500;color:var(--text);flex:1;min-width:0;}
+.watch-meta{font-size:11px;color:var(--text3);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.watch-chevron{font-size:11px;color:var(--text3);transition:transform 0.2s;flex-shrink:0;}
+.watch-chevron.open{transform:rotate(180deg);}
+.watch-body{border-top:1px solid var(--border2);padding:12px 16px;}
+.watch-update-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border2);}
+.watch-update-row:last-child{border-bottom:none;}
+.watch-update-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:6px;}
+.watch-update-content{flex:1;min-width:0;}
+.watch-update-text{font-size:13px;color:var(--text);}
+.watch-update-date{font-size:11px;color:var(--text4);margin-top:2px;}
+.watch-add-update{display:flex;gap:8px;margin-top:10px;}
+.status-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text3);transition:var(--transition);}
+.status-chip.active-chip{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.status-chip:hover{border-color:var(--accent);}
+.watch-actions{opacity:0;transition:var(--transition);display:flex;gap:6px;}
+.watch-header:hover .watch-actions{opacity:1;}
+@media(max-width:680px){.watch-actions{opacity:1;}}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(128,128,128,0.3);border-radius:10px;}
@@ -518,6 +558,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><path d="M3 20h18"/></svg>
         </div><span>Daily Log</span>
       </div>
+      <div class="nav-item" onclick="navTo('watch')">
+        <div class="nav-icon-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div><span>Watch</span>
+      </div>
       <div class="nav-item" onclick="navTo('misc')">
         <div class="nav-icon-wrap">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
@@ -625,6 +670,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="seg" id="todo-seg" style="margin-bottom:0">
           <button class="seg-btn active" onclick="switchTodoTab('office',this)">Office</button>
           <button class="seg-btn" onclick="switchTodoTab('personal',this)">Personal</button>
+          <button class="seg-btn" onclick="switchTodoTab('recurring',this)">Recurring</button>
         </div>
         <div class="seg" id="todo-filter-seg" style="margin-bottom:0">
           <button class="seg-btn active" onclick="switchTodoFilter('all',this)">All</button>
@@ -632,6 +678,40 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <button class="seg-btn" onclick="switchTodoFilter('planned',this)">Planned</button>
         </div>
       </div>
+
+      <!-- RECURRING TASK FORM (shown only in recurring tab) -->
+      <div class="card" id="recur-form-card" style="display:none">
+        <div class="card-title">New Recurring Task</div>
+        <div class="card-padded" style="padding-top:14px">
+          <div class="field-grid">
+            <div class="field" style="grid-column:1/-1"><label>Task Name</label><input type="text" id="rt-name" placeholder="e.g. Go home, Morning standup..."></div>
+            <div class="field"><label>Category</label>
+              <select id="rt-cat"><option value="office">Office</option><option value="personal">Personal</option></select>
+            </div>
+            <div class="field"><label>Priority</label>
+              <select id="rt-pri"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Time per weekday — leave blank to skip that day</label>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px">
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">MON</div><input type="time" id="rt-mon" style="padding:5px 3px;font-size:11px;text-align:center"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">TUE</div><input type="time" id="rt-tue" style="padding:5px 3px;font-size:11px;text-align:center"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">WED</div><input type="time" id="rt-wed" style="padding:5px 3px;font-size:11px;text-align:center"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">THU</div><input type="time" id="rt-thu" style="padding:5px 3px;font-size:11px;text-align:center"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">FRI</div><input type="time" id="rt-fri" style="padding:5px 3px;font-size:11px;text-align:center"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">SAT</div><input type="time" id="rt-sat" style="padding:5px 3px;font-size:11px;text-align:center"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">SUN</div><input type="time" id="rt-sun" style="padding:5px 3px;font-size:11px;text-align:center"></div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="addRecurringTask()">Save Recurring Task</button>
+            <button class="btn btn-ghost" id="rt-cancel-btn" style="display:none" onclick="cancelRTEdit()">Cancel</button>
+            <input type="hidden" id="rt-edit-id">
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-padded">
           <div class="field"><label>Task</label><input type="text" id="t-text" placeholder="What needs to be done?"></div>
@@ -657,7 +737,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           </div>
         </div>
       </div>
-      <div class="card"><div id="t-list"></div></div>
+      <!-- One-off task list -->
+      <div class="card" id="t-list-card"><div id="t-list"></div></div>
+      <!-- Recurring task list -->
+      <div id="rt-list-wrap" style="display:none">
+        <div class="card"><div id="rt-list"></div></div>
+      </div>
     </div>
 
     <!-- REMINDERS -->
@@ -795,6 +880,43 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
       </div>
       <div id="log-entries-list"></div>
+    </div>
+
+    <!-- WATCH LIST -->
+    <div class="page" id="page-watch">
+      <div class="page-title">Watch List</div>
+      <div class="page-sub">Track what others are working on — follow up, monitor progress</div>
+
+      <div class="card">
+        <div class="card-title">Add to Watch List</div>
+        <div class="card-padded" style="padding-top:14px">
+          <div class="field"><label>What are you tracking?</label><input type="text" id="w-title" placeholder="e.g. Nexio logo — team task, Client proposal review..."></div>
+          <div class="field-grid">
+            <div class="field"><label>Owner / Team</label><input type="text" id="w-owner" placeholder="e.g. Design team, Rahul..."></div>
+            <div class="field"><label>Target Date</label><input type="date" id="w-due"></div>
+            <div class="field"><label>Priority</label>
+              <select id="w-pri"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+            </div>
+          </div>
+          <div class="field"><label>Context</label><textarea id="w-notes" placeholder="What exactly needs to happen? Any blockers?" style="min-height:56px"></textarea></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="addWatchItem()">Add to Watch List</button>
+            <button class="btn btn-ghost" id="w-cancel-btn" style="display:none" onclick="cancelWEdit()">Cancel</button>
+            <input type="hidden" id="w-edit-id">
+          </div>
+        </div>
+      </div>
+
+      <!-- STATUS FILTER -->
+      <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap" id="w-filter-row">
+        <button class="status-chip active-chip" onclick="setWatchFilter('all',this)">All</button>
+        <button class="status-chip" onclick="setWatchFilter('on-track',this)">On Track</button>
+        <button class="status-chip" onclick="setWatchFilter('at-risk',this)">At Risk</button>
+        <button class="status-chip" onclick="setWatchFilter('blocked',this)">Blocked</button>
+        <button class="status-chip" onclick="setWatchFilter('done',this)">Done</button>
+      </div>
+
+      <div id="w-list"></div>
     </div>
 
     <div class="page" id="page-misc">
@@ -1012,6 +1134,7 @@ function nav(p,el){
   if(p==='reminders') renderReminders();
   if(p==='dashboard') renderDashboard();
   if(p==='log'){ initLog(); }
+  if(p==='watch'){ renderWatchList(); }
 }
 async function initApp(){
   // Show loading overlay
@@ -1042,6 +1165,7 @@ async function initApp(){
   // Render everything
   renderDashboard();
   renderJournal(); renderHabits(); renderTodos(); renderReminders(); renderNotes(); renderPlanner(); renderMisc();
+  renderRecurringTasks();
   updateRemBadge();
   setInterval(()=>{updateRemBadge();renderReminders();renderDashboard();},60000);
 }
@@ -1152,7 +1276,26 @@ function renderHabits(){
 // TASKS
 // ══════════════════════════════════════════
 let todoTab='office';
-function switchTodoTab(t,el){todoTab=t;document.querySelectorAll('#todo-seg .seg-btn').forEach(b=>b.classList.remove('active'));if(el)el.classList.add('active');renderTodos();}
+function switchTodoTab(t,el){
+  todoTab=t;
+  document.querySelectorAll('#todo-seg .seg-btn').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const isRecur = t==='recurring';
+  // Toggle visibility of forms and lists
+  const recurForm = document.getElementById('recur-form-card');
+  const regularForm = document.querySelector('#page-todo .card:not(#recur-form-card):not(#t-list-card)');
+  const tListCard = document.getElementById('t-list-card');
+  const rtListWrap = document.getElementById('rt-list-wrap');
+  const filterSeg = document.getElementById('todo-filter-seg');
+  const todayFocus = document.querySelector('.today-focus');
+  if(recurForm) recurForm.style.display = isRecur ? 'block' : 'none';
+  if(tListCard) tListCard.style.display = isRecur ? 'none' : 'block';
+  if(rtListWrap) rtListWrap.style.display = isRecur ? 'block' : 'none';
+  if(filterSeg) filterSeg.style.display = isRecur ? 'none' : 'inline-flex';
+  if(todayFocus) todayFocus.style.display = isRecur ? 'none' : 'block';
+  if(isRecur) renderRecurringTasks();
+  else renderTodos();
+}
 function addTodo(){
   const text=document.getElementById('t-text').value.trim();
   if(!text){alert('Enter a task');return;}
@@ -1666,10 +1809,12 @@ function renderDashboard(){
 
   // Overdue pill
   const overdue = reminders.filter(r=>!r.done && new Date(r.datetime)<now).length;
+  const blocked = S.g('watch_items').filter(w=>w.status==='blocked').length;
   const overdueEl = document.getElementById('dash-overdue-pill');
-  overdueEl.innerHTML = overdue > 0
-    ? `<span onclick="navTo('reminders')" style="cursor:pointer;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:600;padding:3px 10px;border-radius:3px;">⚠️ ${overdue} overdue reminder${overdue>1?'s':''}</span>`
-    : '';
+  const pills = [];
+  if(overdue>0) pills.push(`<span onclick="navTo('reminders')" style="cursor:pointer;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:600;padding:3px 10px;border-radius:3px;">⚠️ ${overdue} overdue reminder${overdue>1?'s':''}</span>`);
+  if(blocked>0) pills.push(`<span onclick="navTo('watch')" style="cursor:pointer;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:600;padding:3px 10px;border-radius:3px;">🚫 ${blocked} blocked item${blocked>1?'s':''}</span>`);
+  overdueEl.innerHTML = pills.join(' ');
 
   // ── BUILD TIMELINE ITEMS ──
   // 1. Tasks with a time set for today (or starred tasks with no time — place at top)
@@ -1689,7 +1834,8 @@ function renderDashboard(){
   // Journal entries today
   const todayJournal = journal.filter(e => e.date === tds);
 
-  // Merge timed tasks + journal into one timeline sorted by time
+  // Merge timed tasks + journal + recurring into one timeline sorted by time
+  const recurringItems = typeof getTodayRecurringItems === 'function' ? getTodayRecurringItems() : [];
   const timelineItems = [
     ...timedTasks.map(t => ({
       type: 'task', time: t.time, sortKey: t.time,
@@ -1699,7 +1845,8 @@ function renderDashboard(){
     ...todayJournal.map(e => ({
       type: 'journal', time: e.start, sortKey: e.start || '00:00',
       id: e.id, text: e.title, cat: e.cat, dur: e.dur, notes: e.notes
-    }))
+    })),
+    ...recurringItems
   ].sort((a,b) => a.sortKey.localeCompare(b.sortKey));
 
   // Format time helper
@@ -1756,6 +1903,20 @@ function renderDashboard(){
               ${item.due ? `<span style="font-size:10px;color:var(--text4)">Due ${fmtD(item.due)}</span>` : ''}
             </div>
             ${item.notes ? `<div style="font-size:11px;color:var(--text3);margin-top:2px">${esc(item.notes)}</div>` : ''}
+          </div>
+        </div>`;
+      } else if(item.type === 'recurring') {
+        // Recurring task
+        const priColor = PRI_C[item.pri] || 'var(--text3)';
+        html += `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border2);${isPast?'opacity:0.45;':''}" onclick="navTo('todo')" class="dash-row-item">
+          <div style="min-width:54px;text-align:right;font-size:11px;font-weight:600;color:var(--text3);padding-top:2px;flex-shrink:0">${fmtTime(item.time)}</div>
+          <div style="width:2px;background:var(--text4);border-radius:2px;min-height:36px;flex-shrink:0;margin-top:3px;opacity:0.5;border-left:2px dashed var(--text4);width:0"></div>
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div style="font-size:13px;font-weight:500;color:var(--text)">${esc(item.text)}</div>
+              <span style="font-size:10px;color:var(--text4);background:var(--bg3);padding:1px 5px;border-radius:2px">↻ recurring</span>
+            </div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${item.cat}</div>
           </div>
         </div>`;
       } else {
@@ -2073,10 +2234,333 @@ function initLog(){
   renderLogEntries();
 }
 
+
+// ══════════════════════════════════════════
+// RECURRING TASKS
+// ══════════════════════════════════════════
+const DAYS_SHORT = ['mon','tue','wed','thu','fri','sat','sun'];
+const DAYS_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+let rtEditId = null;
+
+function addRecurringTask(){
+  const name = document.getElementById('rt-name').value.trim();
+  if(!name){ alert('Enter a task name'); return; }
+  const schedule = {};
+  DAYS_SHORT.forEach(d => {
+    const val = document.getElementById('rt-'+d)?.value;
+    if(val) schedule[d] = val;
+  });
+  if(!Object.keys(schedule).length){ alert('Set at least one day time'); return; }
+  const arr = S.g('recurring_tasks');
+  const task = {
+    id: rtEditId || uid(),
+    name,
+    cat: document.getElementById('rt-cat').value,
+    pri: document.getElementById('rt-pri').value,
+    schedule, // {mon:'09:00', tue:'09:30', ...}
+    active: true,
+    created: today()
+  };
+  if(rtEditId){
+    const i = arr.findIndex(x=>x.id===rtEditId);
+    if(i>=0) arr[i]=task;
+    rtEditId=null;
+    document.getElementById('rt-cancel-btn').style.display='none';
+    document.getElementById('rt-edit-id').value='';
+  } else {
+    arr.push(task);
+  }
+  S.s('recurring_tasks', arr);
+  clearRTForm();
+  renderRecurringTasks();
+}
+
+function clearRTForm(){
+  document.getElementById('rt-name').value='';
+  DAYS_SHORT.forEach(d=>{ const el=document.getElementById('rt-'+d); if(el) el.value=''; });
+}
+
+function editRecurringTask(id){
+  const arr = S.g('recurring_tasks');
+  const t = arr.find(x=>x.id===id); if(!t) return;
+  document.getElementById('rt-name').value = t.name;
+  document.getElementById('rt-cat').value = t.cat||'office';
+  document.getElementById('rt-pri').value = t.pri||'medium';
+  DAYS_SHORT.forEach(d=>{
+    const el = document.getElementById('rt-'+d);
+    if(el) el.value = t.schedule[d]||'';
+  });
+  rtEditId=id;
+  document.getElementById('rt-cancel-btn').style.display='inline-flex';
+  document.getElementById('rt-edit-id').value=id;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function cancelRTEdit(){
+  rtEditId=null;
+  document.getElementById('rt-cancel-btn').style.display='none';
+  document.getElementById('rt-edit-id').value='';
+  clearRTForm();
+}
+
+function toggleRecurringActive(id){
+  const arr = S.g('recurring_tasks');
+  const t = arr.find(x=>x.id===id);
+  if(t){ t.active=!t.active; S.s('recurring_tasks',arr); renderRecurringTasks(); }
+}
+
+function deleteRecurringTask(id){
+  if(!confirm('Delete this recurring task?')) return;
+  S.s('recurring_tasks', S.g('recurring_tasks').filter(t=>t.id!==id));
+  renderRecurringTasks();
+}
+
+function renderRecurringTasks(){
+  const arr = S.g('recurring_tasks');
+  const list = document.getElementById('rt-list');
+  if(!list) return;
+  if(!arr.length){
+    list.innerHTML=`<div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">↻</div><div class="empty-title">No recurring tasks</div><div class="empty-sub">Add tasks that repeat on a weekly schedule</div></div>`;
+    return;
+  }
+  const fmtTime=t=>{if(!t)return'—';const[h,m]=t.split(':');const hr=+h;return `${hr%12||12}:${m}${hr>=12?'pm':'am'}`;}
+  list.innerHTML = arr.map(t=>`
+    <div class="recur-item ${t.active===false?'':''}">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div class="recur-name">${esc(t.name)}</div>
+          <span class="badge ${t.cat==='office'?'badge-blue':'badge-green'}" style="font-size:10px">${t.cat}</span>
+          <span class="badge badge-muted" style="font-size:10px">${t.pri}</span>
+          ${t.active===false?'<span class="badge badge-muted" style="font-size:10px">Paused</span>':''}
+        </div>
+        <div class="recur-days">
+          ${DAYS_SHORT.map((d,i)=>{
+            const time=t.schedule[d];
+            return `<div class="recur-day">
+              <div class="recur-day-label">${DAYS_LABELS[i]}</div>
+              <div class="recur-day-time ${time?'active':'inactive'}">${time?fmtTime(time):'—'}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="recur-actions">
+        <button class="icon-btn" onclick="toggleRecurringActive('${t.id}')" title="${t.active===false?'Resume':'Pause'}" style="font-size:11px">${t.active===false?'▶':'⏸'}</button>
+        <button class="icon-btn edit" onclick="editRecurringTask('${t.id}')">✎</button>
+        <button class="icon-btn" onclick="deleteRecurringTask('${t.id}')">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+// Called by dashboard to get today's recurring tasks
+function getTodayRecurringItems(){
+  const arr = S.g('recurring_tasks');
+  const dow = new Date().getDay(); // 0=Sun,1=Mon...6=Sat
+  const dayMap = [6,0,1,2,3,4,5]; // convert JS day to our mon=0 index
+  const dayKey = DAYS_SHORT[dayMap[dow]];
+  return arr
+    .filter(t => t.active!==false && t.schedule[dayKey])
+    .map(t => ({
+      type: 'recurring',
+      time: t.schedule[dayKey],
+      sortKey: t.schedule[dayKey],
+      id: t.id,
+      text: t.name,
+      cat: t.cat,
+      pri: t.pri
+    }));
+}
+
+
+// ══════════════════════════════════════════
+// WATCH LIST
+// ══════════════════════════════════════════
+const STATUS_META = {
+  'on-track': { label:'On Track', color:'var(--green)',   dot:'#0f7b6c' },
+  'at-risk':  { label:'At Risk',  color:'var(--orange)',  dot:'#d9730d' },
+  'blocked':  { label:'Blocked',  color:'var(--red)',     dot:'#e03e3e' },
+  'done':     { label:'Done',     color:'var(--text4)',   dot:'#aeaaa4' },
+  'pending':  { label:'Pending',  color:'var(--text3)',   dot:'#787774' },
+};
+let wEditId=null, watchFilter='all';
+
+function addWatchItem(){
+  const title=document.getElementById('w-title').value.trim();
+  if(!title){alert('Enter what you are tracking');return;}
+  const arr=S.g('watch_items');
+  const item={
+    id:wEditId||uid(),
+    title,
+    owner:document.getElementById('w-owner').value.trim(),
+    due:document.getElementById('w-due').value,
+    pri:document.getElementById('w-pri').value,
+    notes:document.getElementById('w-notes').value.trim(),
+    status:'pending',
+    updates:[],
+    created:today()
+  };
+  if(wEditId){
+    const i=arr.findIndex(x=>x.id===wEditId);
+    if(i>=0){arr[i]={...arr[i],...item,updates:arr[i].updates,status:arr[i].status};}
+    wEditId=null;document.getElementById('w-cancel-btn').style.display='none';
+    document.getElementById('w-edit-id').value='';
+  } else arr.push(item);
+  S.s('watch_items',arr);
+  ['w-title','w-owner','w-due','w-notes'].forEach(id=>document.getElementById(id).value='');
+  renderWatchList();
+}
+
+function editWatchItem(id){
+  const item=S.g('watch_items').find(x=>x.id===id);if(!item)return;
+  document.getElementById('w-title').value=item.title;
+  document.getElementById('w-owner').value=item.owner||'';
+  document.getElementById('w-due').value=item.due||'';
+  document.getElementById('w-pri').value=item.pri||'medium';
+  document.getElementById('w-notes').value=item.notes||'';
+  document.getElementById('w-edit-id').value=id;
+  wEditId=id;document.getElementById('w-cancel-btn').style.display='inline-flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function cancelWEdit(){
+  wEditId=null;document.getElementById('w-cancel-btn').style.display='none';
+  document.getElementById('w-edit-id').value='';
+  ['w-title','w-owner','w-due','w-notes'].forEach(id=>document.getElementById(id).value='');
+}
+
+function setWatchStatus(id,status){
+  const arr=S.g('watch_items');
+  const item=arr.find(x=>x.id===id);
+  if(item){item.status=status;S.s('watch_items',arr);renderWatchList();}
+}
+
+function addWatchUpdate(id){
+  const input=document.getElementById('wu-input-'+id);
+  if(!input||!input.value.trim()) return;
+  const arr=S.g('watch_items');
+  const item=arr.find(x=>x.id===id);
+  if(item){
+    if(!item.updates) item.updates=[];
+    item.updates.unshift({id:uid(),text:input.value.trim(),date:today()});
+    S.s('watch_items',arr);
+    input.value='';
+    renderWatchList();
+  }
+}
+
+function deleteWatchUpdate(itemId,updateId){
+  const arr=S.g('watch_items');
+  const item=arr.find(x=>x.id===itemId);
+  if(item){item.updates=item.updates.filter(u=>u.id!==updateId);S.s('watch_items',arr);renderWatchList();}
+}
+
+function deleteWatchItem(id){
+  if(!confirm('Remove from watch list?'))return;
+  S.s('watch_items',S.g('watch_items').filter(x=>x.id!==id));
+  renderWatchList();
+}
+
+function toggleWatchExpand(id){
+  const body=document.getElementById('wb-'+id);
+  const chev=document.getElementById('wc-'+id);
+  if(!body)return;
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  if(chev)chev.classList.toggle('open',!isOpen);
+}
+
+function setWatchFilter(f,el){
+  watchFilter=f;
+  document.querySelectorAll('#w-filter-row .status-chip').forEach(b=>b.classList.remove('active-chip'));
+  if(el)el.classList.add('active-chip');
+  renderWatchList();
+}
+
+function renderWatchList(){
+  let arr=S.g('watch_items');
+  if(watchFilter!=='all') arr=arr.filter(x=>x.status===watchFilter);
+  arr.sort((a,b)=>{
+    // done goes last, blocked first
+    const ord={blocked:0,'at-risk':1,pending:2,'on-track':3,done:4};
+    return (ord[a.status]||2)-(ord[b.status]||2);
+  });
+  const list=document.getElementById('w-list');if(!list)return;
+  if(!arr.length){
+    list.innerHTML=`<div class="card"><div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">👁</div><div class="empty-title">${watchFilter==='all'?'Nothing on watch list':'No items with this status'}</div><div class="empty-sub">${watchFilter==='all'?'Add items above to start monitoring':'Change filter to see other items'}</div></div></div>`;
+    return;
+  }
+
+  const tds=today();
+  list.innerHTML=arr.map(item=>{
+    const sm=STATUS_META[item.status]||STATUS_META.pending;
+    const priMap={high:'badge-red',medium:'badge-orange',low:'badge-green'};
+    const isOverdue=item.due&&item.due<tds&&item.status!=='done';
+    const isDueToday=item.due===tds&&item.status!=='done';
+    const updates=item.updates||[];
+
+    return `<div class="watch-item">
+      <div class="watch-header" onclick="toggleWatchExpand('${item.id}')">
+        <div class="watch-status-dot" style="background:${sm.dot}"></div>
+        <div style="flex:1;min-width:0">
+          <div class="watch-title">${esc(item.title)}</div>
+          <div class="watch-meta">
+            <span style="color:${sm.color};font-weight:600;font-size:11px">${sm.label}</span>
+            ${item.owner?`<span>→ ${esc(item.owner)}</span>`:''}
+            ${item.due?`<span style="color:${isOverdue?'var(--red)':isDueToday?'var(--orange)':'var(--text4)'}">${isOverdue?'Overdue · ':isDueToday?'Due today · ':''}${fmtD(item.due)}</span>`:''}
+            ${updates.length?`<span>${updates.length} update${updates.length>1?'s':''}</span>`:''}
+          </div>
+        </div>
+        <div class="watch-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn edit" onclick="editWatchItem('${item.id}')">✎</button>
+          <button class="icon-btn" onclick="deleteWatchItem('${item.id}')">✕</button>
+        </div>
+        <div class="watch-chevron" id="wc-${item.id}">▾</div>
+      </div>
+      <div class="watch-body" id="wb-${item.id}" style="display:none">
+        ${item.notes?`<div style="font-size:13px;color:var(--text3);margin-bottom:12px;line-height:1.5;padding:8px 10px;background:var(--bg3);border-radius:3px">${esc(item.notes)}</div>`:''}
+
+        <!-- Status buttons -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+          <span style="font-size:11px;color:var(--text4);align-self:center">Status:</span>
+          ${Object.entries(STATUS_META).map(([key,sm])=>`
+            <button class="status-chip ${item.status===key?'active-chip':''}"
+              onclick="setWatchStatus('${item.id}','${key}')"
+              style="${item.status===key?`background:${sm.color}20;border-color:${sm.dot};color:${sm.dot}`:''}">
+              ${sm.label}
+            </button>`).join('')}
+        </div>
+
+        <!-- Priority & due -->
+        <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+          <span class="badge ${priMap[item.pri]||'badge-muted'}">${item.pri} priority</span>
+          ${item.due?`<span class="badge badge-muted">Due ${fmtD(item.due)}</span>`:''}
+        </div>
+
+        <!-- Updates -->
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Progress Updates</div>
+        ${updates.length?`<div style="margin-bottom:10px">${updates.map(u=>`
+          <div class="watch-update-row">
+            <div class="watch-update-dot"></div>
+            <div class="watch-update-content">
+              <div class="watch-update-text">${esc(u.text)}</div>
+              <div class="watch-update-date">${fmtD(u.date)}</div>
+            </div>
+            <button class="icon-btn" onclick="deleteWatchUpdate('${item.id}','${u.id}')" style="opacity:0.4;font-size:10px">✕</button>
+          </div>`).join('')}</div>`:'<div style="font-size:12px;color:var(--text4);margin-bottom:10px;font-style:italic">No updates yet</div>'}
+
+        <!-- Add update -->
+        <div class="watch-add-update">
+          <input type="text" id="wu-input-${item.id}" placeholder="Add a progress update..." style="flex:1;font-size:13px"
+            onkeydown="if(event.key==='Enter'){addWatchUpdate('${item.id}');}">
+          <button class="btn btn-ghost btn-sm" onclick="addWatchUpdate('${item.id}')">Log update</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 // ══════════════════════════════════════════
 // EXPORT / IMPORT
 // ══════════════════════════════════════════
-const DATA_KEYS = ['journal','habits','todos','reminders','notes','misc','planner_year','planner_week','log_trackers','log_entries','read_targets'];
+const DATA_KEYS = ['journal','habits','todos','reminders','notes','misc','planner_year','planner_week','log_trackers','log_entries','read_targets','recurring_tasks','watch_items'];
 // Note: planner_year stores keys like 'work_2025-0', 'personal_2025-0' etc
 // planner_week stores keys like 'work_week_2025-01-06', 'personal_week_2025-01-06' etc
 
