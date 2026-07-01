@@ -664,7 +664,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="page-sub">Plan smart — focus on what matters today</div>
       <div class="today-focus">
         <div class="today-focus-title">Today's Focus</div>
-        <div id="today-list"><div class="today-empty">Star tasks below to build your daily plan</div></div>
+        <div id="today-list"><div class="today-empty">Star ☆ any task below to pull it onto your dashboard for today</div></div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
         <div class="seg" id="todo-seg" style="margin-bottom:0">
@@ -1402,7 +1402,7 @@ const PRIM={high:{lbl:'High',cls:'badge-red'},medium:{lbl:'Medium',cls:'badge-or
 function renderTodos(){
   const arr=S.g('todos');
   const tdArr=arr.filter(t=>t.today&&!t.done);
-  document.getElementById('today-list').innerHTML=tdArr.length?tdArr.map(t=>`<div style="display:flex;align-items:center;gap:12px;padding:6px 0"><div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="flex-shrink:0">${t.done?'✓':''}</div><span style="font-size:15px;font-weight:600;flex:1;color:var(--text)">${esc(t.text)}</span><span class="badge badge-muted" style="font-size:11px">${t.tab}</span><button class="star-btn on" onclick="toggleToday('${t.id}')" style="font-size:16px">★</button></div>`).join(''):`<div class="today-empty">Star tasks below to build your daily plan</div>`;
+  document.getElementById('today-list').innerHTML=tdArr.length?tdArr.map(t=>`<div style="display:flex;align-items:center;gap:12px;padding:6px 0"><div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="flex-shrink:0">${t.done?'✓':''}</div><span style="font-size:15px;font-weight:600;flex:1;color:var(--text)">${esc(t.text)}</span><span class="badge badge-muted" style="font-size:11px">${t.tab}</span><button class="star-btn on" onclick="toggleToday('${t.id}')" style="font-size:16px">★</button></div>`).join(''):`<div class="today-empty">Star ☆ any task below to pull it onto your dashboard for today</div>`;
   const list=document.getElementById('t-list');
   let filtered=arr.filter(t=>t.tab===todoTab);
   // Apply filter
@@ -1450,7 +1450,7 @@ function renderTodos(){
       </div>
       ${renderSubtasks(t)}
     </div>
-    <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')">${t.today?'★':'☆'}</button>
+    <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')" title="${t.today?'Remove from today':'Add to today — show on dashboard'}">${t.today?'★':'☆'}</button>
     <div class="t-actions">
       <button class="icon-btn edit" onclick="editTodo('${t.id}')">✎</button>
       <button class="icon-btn" onclick="deleteTodo('${t.id}')">✕</button>
@@ -1833,7 +1833,8 @@ function renderDashboard(){
   const timedTasks = allTasks.filter(t => t.time);     // have a time set — go on timeline
   const starredNoTime = allTasks.filter(t => t.today && !t.time);  // starred, no time
   // Dashboard only shows PLANNED tasks (have due date) that are not timed and not starred
-  const otherTasks = allTasks.filter(t => t.due && !t.time && !t.today);
+  // Only show on dashboard if due TODAY (not just any future due date)
+  const otherTasks = allTasks.filter(t => t.due === tds && !t.time && !t.today);
 
   // Journal entries today
   const todayJournal = journal.filter(e => e.date === tds);
@@ -1981,7 +1982,7 @@ function renderDashboard(){
       const tabTasks = otherTasks.filter(t => t.tab === tab);
       if(!tabTasks.length) return;
       const tabIcon = tab === 'office' ? '🏢' : '🏠';
-      html += `<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">${tabIcon} ${tab === 'office' ? 'Office' : 'Personal'} Tasks</div>`;
+      html += `<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">${tabIcon} Due Today — ${tab === 'office' ? 'Office' : 'Personal'}</div>`;
       html += `<div class="card" style="margin-bottom:20px">`;
       const priOrder = {high:0,medium:1,low:2};
       tabTasks.sort((a,b) => (priOrder[a.pri]||1)-(priOrder[b.pri]||1));
@@ -1998,7 +1999,7 @@ function renderDashboard(){
 
   // Empty state
   if(!timelineItems.length && !starredNoTime.length && !otherTasks.length){
-    html += `<div class="card"><div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">All clear!</div><div class="empty-sub">No tasks yet — add some in Tasks</div></div></div>`;
+    html += `<div class="card"><div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">Nothing planned for today</div><div class="empty-sub">Go to Tasks and star ☆ what you want to work on today</div></div></div>`;
   }
 
   // ── WATCH LIST SUMMARY ──
