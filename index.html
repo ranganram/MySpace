@@ -513,7 +513,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">My Space</div>
-      <div class="sidebar-tagline">Your personal OS</div>
+      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.1</span></div>
     </div>
     <div class="nav-group">
       <div class="nav-label">Workspace</div>
@@ -1985,7 +1985,42 @@ function renderDashboard(){
 
   // Empty state
   if(!timelineItems.length && !starredNoTime.length && !otherTasks.length){
-    html = `<div class="card"><div class="empty"><div class="empty-icon">✅</div><div class="empty-title">All clear!</div><div class="empty-sub">No tasks yet — add some in Tasks</div></div></div>`;
+    html += `<div class="card"><div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">All clear!</div><div class="empty-sub">No tasks yet — add some in Tasks</div></div></div>`;
+  }
+
+  // ── WATCH LIST SUMMARY ──
+  const watchItems = S.g('watch_items').filter(w => w.status !== 'done');
+  if(watchItems.length){
+    const statusOrder = {blocked:0,'at-risk':1,pending:2,'on-track':3};
+    watchItems.sort((a,b)=>(statusOrder[a.status]||2)-(statusOrder[b.status]||2));
+    const statusDots = {'on-track':'#0f7b6c','at-risk':'#d9730d','blocked':'#e03e3e','pending':'#787774','done':'#aeaaa4'};
+    const statusLabels = {'on-track':'On Track','at-risk':'At Risk','blocked':'Blocked','pending':'Pending','done':'Done'};
+
+    html += `<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;margin-top:8px;">👁 Watch List</div>`;
+    html += `<div class="card" style="margin-bottom:20px">`;
+    html += watchItems.map(w => {
+      const dot = statusDots[w.status] || '#787774';
+      const label = statusLabels[w.status] || w.status;
+      const tds = today();
+      const isOverdue = w.due && w.due < tds;
+      const isDueToday = w.due === tds;
+      const lastUpdate = (w.updates||[])[0];
+      return `<div class="dash-row-item" onclick="navTo('watch')" style="align-items:flex-start;padding:9px 14px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:${dot};flex-shrink:0;margin-top:5px;"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:500;color:var(--text)">${esc(w.title)}</div>
+          <div style="display:flex;gap:8px;margin-top:3px;flex-wrap:wrap;align-items:center">
+            <span style="font-size:11px;font-weight:600;color:${dot}">${label}</span>
+            ${w.owner ? `<span style="font-size:11px;color:var(--text3)">→ ${esc(w.owner)}</span>` : ''}
+            ${w.due ? `<span style="font-size:11px;color:${isOverdue?'var(--red)':isDueToday?'var(--orange)':'var(--text4)'}">${isOverdue?'Overdue':isDueToday?'Due today':fmtD(w.due)}</span>` : ''}
+          </div>
+          ${lastUpdate ? `<div style="font-size:11px;color:var(--text3);margin-top:3px;font-style:italic">"${esc(lastUpdate.text)}"</div>` : ''}
+        </div>
+        <div style="font-size:10px;color:var(--text4);flex-shrink:0;padding-top:3px">${(w.updates||[]).length ? (w.updates||[]).length+' update'+((w.updates||[]).length>1?'s':'') : ''}</div>
+      </div>`;
+    }).join('');
+    html += `<div style="padding:8px 14px;border-top:1px solid var(--border2)"><button class="btn btn-ghost btn-sm" onclick="navTo('watch')" style="font-size:11px">View all →</button></div>`;
+    html += `</div>`;
   }
 
   document.getElementById('dash-timeline').innerHTML = html;
