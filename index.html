@@ -513,7 +513,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">My Space</div>
-      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.1</span></div>
+      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.2</span></div>
     </div>
     <div class="nav-group">
       <div class="nav-label">Workspace</div>
@@ -720,7 +720,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               <select id="t-pri"><option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option></select>
             </div>
             <div class="field"><label>Due Date</label><input type="date" id="t-date"></div>
-            <div class="field"><label>Time (for timeline)</label><input type="time" id="t-time"></div>
+            <div class="field"><label>Start Time</label><input type="time" id="t-time"></div>
+            <div class="field"><label>End Time</label><input type="time" id="t-end-time"></div>
           </div>
           <div class="field"><label>Notes</label><textarea id="t-notes" placeholder="Details..." style="min-height:60px"></textarea></div>
           <div class="field">
@@ -1303,17 +1304,18 @@ function addTodo(){
   const arr=S.g('todos');
   const due=document.getElementById('t-date')?.value||'';
   const ttime=document.getElementById('t-time')?.value||'';
+  const tendtime=document.getElementById('t-end-time')?.value||'';
   if(tEditId){
     const t=arr.find(x=>x.id===tEditId);
-    if(t){t.text=text;t.notes=document.getElementById('t-notes').value.trim();t.pri=document.getElementById('t-pri').value;t.due=due;t.time=ttime;t.subtasks=collectSubtasks();}
+    if(t){t.text=text;t.notes=document.getElementById('t-notes').value.trim();t.pri=document.getElementById('t-pri').value;t.due=due;t.time=ttime;t.endTime=tendtime;t.subtasks=collectSubtasks();}
     tEditId=null;
     const cancelBtn=document.getElementById('t-cancel-btn');
     if(cancelBtn) cancelBtn.style.display='none';
   } else {
-    arr.push({id:uid(),tab:todoTab,text,notes:document.getElementById('t-notes').value.trim(),pri:document.getElementById('t-pri').value,due,time:ttime,subtasks:collectSubtasks(),done:false,today:false,created:today()});
+    arr.push({id:uid(),tab:todoTab,text,notes:document.getElementById('t-notes').value.trim(),pri:document.getElementById('t-pri').value,due,time:ttime,endTime:tendtime,subtasks:collectSubtasks(),done:false,today:false,created:today()});
   }
   S.s('todos',arr);
-  ['t-text','t-notes','t-date','t-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['t-text','t-notes','t-date','t-time','t-end-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   clearSubtaskForm();
   renderTodos();
 }
@@ -1379,6 +1381,7 @@ function editTodo(id){
   document.getElementById('t-pri').value=t.pri;
   if(document.getElementById('t-date')) document.getElementById('t-date').value=t.due||'';
   if(document.getElementById('t-time')) document.getElementById('t-time').value=t.time||'';
+  if(document.getElementById('t-end-time')) document.getElementById('t-end-time').value=t.endTime||'';
   loadSubtasksIntoForm(t.subtasks||[]);
   // Switch to correct tab
   if(t.tab!==todoTab) switchTodoTab(t.tab, document.querySelector(`#todo-seg .seg-btn:${t.tab==='office'?'first':'last'}-child`));
@@ -1390,7 +1393,7 @@ function editTodo(id){
 }
 function cancelTEdit(){
   tEditId=null;
-  ['t-text','t-notes','t-date','t-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['t-text','t-notes','t-date','t-time','t-end-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   clearSubtaskForm();
   const cancelBtn=document.getElementById('t-cancel-btn');
   if(cancelBtn) cancelBtn.style.display='none';
@@ -1443,7 +1446,7 @@ function renderTodos(){
       <div class="t-chips">
         <span class="badge ${PRIM[t.pri]?.cls||'badge-muted'}">${PRIM[t.pri]?.lbl||t.pri}</span>
         ${dueBadge(t)}
-        ${t.time?`<span class="badge badge-muted">⏰ ${t.time}</span>`:''}
+        ${t.time?`<span class="badge badge-muted">⏰ ${t.time}${t.endTime?' – '+t.endTime:''}</span>`:''}
       </div>
       ${renderSubtasks(t)}
     </div>
@@ -1841,7 +1844,7 @@ function renderDashboard(){
     ...timedTasks.map(t => ({
       type: 'task', time: t.time, sortKey: t.time,
       id: t.id, text: t.text, notes: t.notes, pri: t.pri, tab: t.tab,
-      today: t.today, due: t.due
+      today: t.today, due: t.due, endTime: t.endTime||''
     })),
     ...todayJournal.map(e => ({
       type: 'journal', time: e.start, sortKey: e.start || '00:00',
@@ -1891,7 +1894,10 @@ function renderDashboard(){
         const priColor = PRI_C[item.pri] || 'var(--text3)';
         const tabIcon = item.tab === 'office' ? '🏢' : '🏠';
         html += `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border2);${isPast?'opacity:0.45;':''}" onclick="navTo('todo')" class="dash-row-item">
-          <div style="min-width:54px;text-align:right;font-size:11px;font-weight:600;color:${item.today?'var(--accent)':'var(--text3)'};padding-top:2px;flex-shrink:0">${fmtTime(item.time)}</div>
+          <div style="min-width:54px;text-align:right;flex-shrink:0;padding-top:2px">
+            <div style="font-size:11px;font-weight:600;color:${item.today?'var(--accent)':'var(--text3)'}">${fmtTime(item.time)}</div>
+            ${item.endTime ? `<div style="font-size:10px;color:var(--text4);margin-top:1px">${fmtTime(item.endTime)}</div>` : ''}
+          </div>
           <div style="width:2px;background:${priColor};border-radius:2px;min-height:36px;flex-shrink:0;margin-top:3px;opacity:0.6"></div>
           <div style="flex:1;min-width:0">
             <div style="font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:6px">
@@ -1901,6 +1907,7 @@ function renderDashboard(){
             <div style="display:flex;gap:6px;margin-top:3px;flex-wrap:wrap;align-items:center">
               <span style="font-size:11px;color:var(--text3)">${tabIcon} ${item.tab}</span>
               <span style="font-size:10px;font-weight:600;color:${priColor}">${item.pri}</span>
+              ${item.endTime ? `<span style="font-size:10px;color:var(--text4)">${(()=>{const[sh,sm]=item.time.split(':');const[eh,em]=item.endTime.split(':');const dur=(+eh*60+ +em)-(+sh*60+ +sm);return dur>0?dur+'m':''})()}</span>` : ''}
               ${item.due ? `<span style="font-size:10px;color:var(--text4)">Due ${fmtD(item.due)}</span>` : ''}
             </div>
             ${item.notes ? `<div style="font-size:11px;color:var(--text3);margin-top:2px">${esc(item.notes)}</div>` : ''}
