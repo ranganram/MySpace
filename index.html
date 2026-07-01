@@ -712,7 +712,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="t-form-card">
         <div class="card-padded">
           <div class="field"><label>Task</label><input type="text" id="t-text" placeholder="What needs to be done?"></div>
           <div class="field-grid">
@@ -1283,12 +1283,13 @@ function switchTodoTab(t,el){
   const isRecur = t==='recurring';
   // Toggle visibility of forms and lists
   const recurForm = document.getElementById('recur-form-card');
-  const regularForm = document.querySelector('#page-todo .card:not(#recur-form-card):not(#t-list-card)');
+  const regularForm = document.getElementById('t-form-card');
   const tListCard = document.getElementById('t-list-card');
   const rtListWrap = document.getElementById('rt-list-wrap');
   const filterSeg = document.getElementById('todo-filter-seg');
   const todayFocus = document.querySelector('.today-focus');
   if(recurForm) recurForm.style.display = isRecur ? 'block' : 'none';
+  if(regularForm) regularForm.style.display = isRecur ? 'none' : 'block';
   if(tListCard) tListCard.style.display = isRecur ? 'none' : 'block';
   if(rtListWrap) rtListWrap.style.display = isRecur ? 'block' : 'none';
   if(filterSeg) filterSeg.style.display = isRecur ? 'none' : 'inline-flex';
