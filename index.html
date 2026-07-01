@@ -1106,18 +1106,19 @@ function addTodo(){
   const text=document.getElementById('t-text').value.trim();
   if(!text){alert('Enter a task');return;}
   const arr=S.g('todos');
+  const due=document.getElementById('t-date')?.value||'';
+  const ttime=document.getElementById('t-time')?.value||'';
   if(tEditId){
     const t=arr.find(x=>x.id===tEditId);
-    if(t){t.text=text;t.notes=document.getElementById('t-notes').value.trim();t.pri=document.getElementById('t-pri').value;}
+    if(t){t.text=text;t.notes=document.getElementById('t-notes').value.trim();t.pri=document.getElementById('t-pri').value;t.due=due;t.time=ttime;}
     tEditId=null;
     const cancelBtn=document.getElementById('t-cancel-btn');
     if(cancelBtn) cancelBtn.style.display='none';
   } else {
-    arr.push({id:uid(),tab:todoTab,text,notes:document.getElementById('t-notes').value.trim(),pri:document.getElementById('t-pri').value,done:false,today:false,created:today()});
+    arr.push({id:uid(),tab:todoTab,text,notes:document.getElementById('t-notes').value.trim(),pri:document.getElementById('t-pri').value,due,time:ttime,done:false,today:false,created:today()});
   }
   S.s('todos',arr);
-  document.getElementById('t-text').value='';
-  document.getElementById('t-notes').value='';
+  ['t-text','t-notes','t-date','t-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   renderTodos();
 }
 function toggleDone(id){const arr=S.g('todos');const t=arr.find(x=>x.id===id);if(t)t.done=!t.done;S.s('todos',arr);renderTodos();}
@@ -1129,6 +1130,8 @@ function editTodo(id){
   document.getElementById('t-text').value=t.text;
   document.getElementById('t-notes').value=t.notes||'';
   document.getElementById('t-pri').value=t.pri;
+  if(document.getElementById('t-date')) document.getElementById('t-date').value=t.due||'';
+  if(document.getElementById('t-time')) document.getElementById('t-time').value=t.time||'';
   // Switch to correct tab
   if(t.tab!==todoTab) switchTodoTab(t.tab, document.querySelector(`#todo-seg .seg-btn:${t.tab==='office'?'first':'last'}-child`));
   tEditId=id;
@@ -1139,8 +1142,7 @@ function editTodo(id){
 }
 function cancelTEdit(){
   tEditId=null;
-  document.getElementById('t-text').value='';
-  document.getElementById('t-notes').value='';
+  ['t-text','t-notes','t-date','t-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   const cancelBtn=document.getElementById('t-cancel-btn');
   if(cancelBtn) cancelBtn.style.display='none';
 }
@@ -1153,8 +1155,16 @@ function renderTodos(){
   const filtered=arr.filter(t=>t.tab===todoTab);
   if(!filtered.length){list.innerHTML=`<div class="empty"><div class="empty-icon">✅</div><div class="empty-title">All clear!</div><div class="empty-sub">No ${todoTab} tasks</div></div>`;return;}
   const ord={high:0,medium:1,low:2};
-  filtered.sort((a,b)=>{ if(a.done!==b.done) return a.done?1:-1; return ord[a.pri]-ord[b.pri]; });
-  list.innerHTML=filtered.map(t=>`<div class="todo-item ${t.done?'is-done':''}"><div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')">${t.done?'✓':''}</div><div class="t-body"><div class="t-text">${esc(t.text)}</div>${t.notes?`<div class="t-sub">${esc(t.notes)}</div>`:''}<div class="t-chips"><span class="badge ${PRIM[t.pri]?.cls||'badge-muted'}">${PRIM[t.pri]?.lbl||t.pri}</span></div></div><button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')">${t.today?'★':'☆'}</button><div class="t-actions"><button class="icon-btn edit" onclick="editTodo('${t.id}')">✎</button><button class="icon-btn" onclick="deleteTodo('${t.id}')">✕</button></div></div>`).join('');
+  filtered.sort((a,b)=>{ if(a.done!==b.done) return a.done?1:-1; if(ord[a.pri]!==ord[b.pri]) return ord[a.pri]-ord[b.pri]; return (a.due||'9999').localeCompare(b.due||'9999'); });
+  const tdy=today();
+  const dueBadge=t=>{
+    if(!t.due) return '';
+    const overdue=!t.done&&t.due<tdy,isToday=t.due===tdy;
+    const cls=overdue?'badge-red':isToday?'badge-orange':'badge-muted';
+    const lbl=overdue?`Overdue · ${fmtD(t.due)}`:isToday?'Due today':`Due ${fmtD(t.due)}`;
+    return `<span class="badge ${cls}">${lbl}</span>`;
+  };
+  list.innerHTML=filtered.map(t=>`<div class="todo-item ${t.done?'is-done':''}"><div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')">${t.done?'✓':''}</div><div class="t-body"><div class="t-text">${esc(t.text)}</div>${t.notes?`<div class="t-sub">${esc(t.notes)}</div>`:''}<div class="t-chips"><span class="badge ${PRIM[t.pri]?.cls||'badge-muted'}">${PRIM[t.pri]?.lbl||t.pri}</span>${dueBadge(t)}${t.time?`<span class="badge badge-muted">⏰ ${t.time}</span>`:''}</div></div><button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')">${t.today?'★':'☆'}</button><div class="t-actions"><button class="icon-btn edit" onclick="editTodo('${t.id}')">✎</button><button class="icon-btn" onclick="deleteTodo('${t.id}')">✕</button></div></div>`).join('');
 }
 
 // ══════════════════════════════════════════
