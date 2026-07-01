@@ -509,30 +509,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
     <!-- JOURNAL -->
     <div class="page active" id="page-dashboard">
-      <div id="dash-greeting" class="dash-greeting"></div>
-      <div id="dash-date" class="dash-date"></div>
-      <!-- STAT CARDS -->
-      <div class="dash-grid" id="dash-stats"></div>
-      <!-- TODAY FOCUS -->
-      <div class="dash-section">
-        <div class="dash-section-title">⭐ Today's Focus <span id="dash-focus-count"></span></div>
-        <div class="card"><div id="dash-focus-list"></div></div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div id="dash-greeting" class="dash-greeting"></div>
+          <div id="dash-date" class="dash-date"></div>
+        </div>
+        <div id="dash-overdue-pill"></div>
       </div>
-      <!-- OVERDUE REMINDERS -->
-      <div class="dash-section" id="dash-rem-section">
-        <div class="dash-section-title">🔔 Reminders <span id="dash-rem-count"></span></div>
-        <div class="card"><div id="dash-rem-list"></div></div>
-      </div>
-      <!-- TODAY TIME -->
-      <div class="dash-section">
-        <div class="dash-section-title">⏱ Today's Time Log <span id="dash-time-count"></span></div>
-        <div class="card"><div id="dash-time-body"></div></div>
-      </div>
-      <!-- HABITS -->
-      <div class="dash-section">
-        <div class="dash-section-title">🔁 Habit Progress <span id="dash-hab-month"></span></div>
-        <div class="dash-hab-grid" id="dash-hab-grid"></div>
-      </div>
+      <div id="dash-timeline"></div>
     </div>
 
     <div class="page" id="page-journal">
@@ -607,11 +591,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
       <div class="card">
         <div class="card-padded">
+          <div class="field"><label>Task</label><input type="text" id="t-text" placeholder="What needs to be done?"></div>
           <div class="field-grid">
-            <div class="field" style="flex:2"><label>Task</label><input type="text" id="t-text" placeholder="What needs to be done?"></div>
             <div class="field"><label>Priority</label>
               <select id="t-pri"><option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option></select>
             </div>
+            <div class="field"><label>Due Date</label><input type="date" id="t-date"></div>
+            <div class="field"><label>Time (for timeline)</label><input type="time" id="t-time"></div>
           </div>
           <div class="field"><label>Notes</label><textarea id="t-notes" placeholder="Details..." style="min-height:60px"></textarea></div>
           <div class="btn-row">
@@ -1509,156 +1495,183 @@ function renderDashboard(){
   const now = new Date();
   const tds = today();
   const hour = now.getHours();
+  const mins = now.getMinutes();
 
   // Greeting
-  const greet = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
-  document.getElementById('dash-greeting').textContent = greet + ' 👋';
+  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('dash-greeting').textContent = greet;
 
-  // Date
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('dash-date').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('dash-date').textContent =
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
   const todos = S.g('todos');
   const reminders = S.g('reminders');
   const journal = S.g('journal');
-  const habits = S.g('habits');
-  const notes = S.g('notes');
 
-  // ── STAT CARDS ──
-  const todayTasks = todos.filter(t=>t.today && !t.done).length;
-  const doneTasks = todos.filter(t=>t.done && t.created===tds).length;
-  const totalTasks = todos.filter(t=>!t.done).length;
-  const overdueRem = reminders.filter(r=>!r.done && new Date(r.datetime)<now).length;
-  const todayRem = reminders.filter(r=>!r.done && new Date(r.datetime)>=now && new Date(r.datetime).toISOString().slice(0,10)===tds).length;
-  const todayJournal = journal.filter(e=>e.date===tds);
-  const todayMins = todayJournal.reduce((a,b)=>a+b.dur,0);
+  // Overdue pill
+  const overdue = reminders.filter(r=>!r.done && new Date(r.datetime)<now).length;
+  const overdueEl = document.getElementById('dash-overdue-pill');
+  overdueEl.innerHTML = overdue > 0
+    ? `<span onclick="navTo('reminders')" style="cursor:pointer;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:600;padding:3px 10px;border-radius:3px;">⚠️ ${overdue} overdue reminder${overdue>1?'s':''}</span>`
+    : '';
 
-  // Habit streak — count habits done today
-  const habDoneToday = habits.filter(h=>!!h.checks[tds]).length;
+  // ── BUILD TIMELINE ITEMS ──
+  // 1. Tasks with a time set for today (or starred tasks with no time — place at top)
+  // 2. Journal entries for today (they have a start time)
+  // All merged and sorted by time
 
-  // Current month habit avg
-  const mo = now.getMonth(); const yr = now.getFullYear();
-  const dim = new Date(yr,mo+1,0).getDate();
-  const daysSoFar = now.getDate();
-  const habAvg = habits.length ? Math.round(habits.reduce((sum,h)=>{
-    const cnt = Array.from({length:daysSoFar},(_,i)=>i+1).filter(d=>!!h.checks[`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`]).length;
-    return sum + cnt/daysSoFar*100;
-  },0)/habits.length) : 0;
+  const CAT_C = {Work:'#ff9f0a',Meeting:'#8b5cf6',Learning:'#2383e2',Exercise:'#0f7b6c',Personal:'#e03e3e',Admin:'#9b9b9b',Other:'#0b6e99'};
+  const PRI_C = {high:'var(--red)',medium:'var(--orange)',low:'var(--green)'};
 
-  const statCards = [
-    {icon:'✅', val:todayTasks, lbl:'Tasks Today', sub:`${totalTasks} total pending`, color:'var(--accent)', nav:'todo'},
-    {icon:'🔔', val:overdueRem+todayRem, lbl:'Reminders', sub:`${overdueRem} overdue · ${todayRem} today`, color: overdueRem>0?'var(--red)':'var(--orange)', nav:'reminders'},
-    {icon:'⏱', val:todayMins+'m', lbl:'Time Logged', sub:`${todayJournal.length} activit${todayJournal.length===1?'y':'ies'} today`, color:'var(--purple)', nav:'journal'},
-    {icon:'🔁', val:habDoneToday+'/'+habits.length, lbl:'Habits Today', sub:`${habAvg}% avg this month`, color:'var(--green)', nav:'habits'},
-    {icon:'💡', val:notes.length, lbl:'Notes Saved', sub:'Across all categories', color:'var(--teal)', nav:'notes'},
-    (()=>{
-      const rtObj=S.go('read_targets');const tds=today();
-      const rt=rtObj[tds]||{noteIds:[],done:{}};
-      const done=Object.values(rt.done).filter(Boolean).length;
-      const total=rt.noteIds.length;
-      return {icon:'📖',val:total?`${done}/${total}`:'—',lbl:'Reading Today',sub:total?`${Math.round(done/total*100)}% complete`:'Set targets in Notes',color:'var(--purple)',nav:'notes'};
-    })(),
-  ];
+  // Tasks: show all incomplete tasks, group by: has time today / starred no time / rest
+  const allTasks = todos.filter(t => !t.done);
+  const timedTasks = allTasks.filter(t => t.time);     // have a time set
+  const starredNoTime = allTasks.filter(t => t.today && !t.time);
+  const otherTasks = allTasks.filter(t => !t.today && !t.time);
 
-  document.getElementById('dash-stats').innerHTML = statCards.map(c=>`
-    <div class="dash-card" style="--dc:${c.color}" onclick="nav('${c.nav}',document.querySelector('.nav-item:nth-child(${['todo','reminders','journal','habits','notes'].indexOf(c.nav)+2})'))">
-      <div class="dash-card-icon">${c.icon}</div>
-      <div class="dash-card-val">${c.val}</div>
-      <div class="dash-card-lbl">${c.lbl}</div>
-      <div class="dash-card-sub">${c.sub}</div>
-    </div>`).join('');
+  // Journal entries today
+  const todayJournal = journal.filter(e => e.date === tds);
 
-  // ── TODAY'S FOCUS ──
-  const focusTasks = todos.filter(t=>t.today&&!t.done);
-  document.getElementById('dash-focus-count').textContent = focusTasks.length ? `${focusTasks.length} task${focusTasks.length>1?'s':''}` : '';
-  const focusEl = document.getElementById('dash-focus-list');
-  const priMap = {high:{cls:'badge-red',lbl:'High'},medium:{cls:'badge-orange',lbl:'Medium'},low:{cls:'badge-green',lbl:'Low'}};
-  if(!focusTasks.length){
-    focusEl.innerHTML=`<div class="dash-empty">No tasks starred for today — go to Tasks and star some ☆</div>`;
-  } else {
-    focusEl.innerHTML = focusTasks.map(t=>`
-      <div class="dash-row-item" onclick="navTo('todo')">
-        <div class="dash-row-icon" style="background:var(--accent-bg)">✅</div>
-        <div class="dash-row-body">
-          <div class="dash-row-title">${esc(t.text)}</div>
-          <div class="dash-row-sub">${t.tab} · <span class="badge ${priMap[t.pri]?.cls||'badge-muted'}" style="font-size:10px;padding:2px 7px">${priMap[t.pri]?.lbl||t.pri}</span></div>
-        </div>
-        <div class="dash-row-right" style="color:var(--accent)">→</div>
-      </div>`).join('');
-  }
+  // Merge timed tasks + journal into one timeline sorted by time
+  const timelineItems = [
+    ...timedTasks.map(t => ({
+      type: 'task', time: t.time, sortKey: t.time,
+      id: t.id, text: t.text, notes: t.notes, pri: t.pri, tab: t.tab,
+      today: t.today, due: t.due
+    })),
+    ...todayJournal.map(e => ({
+      type: 'journal', time: e.start, sortKey: e.start || '00:00',
+      id: e.id, text: e.title, cat: e.cat, dur: e.dur, notes: e.notes
+    }))
+  ].sort((a,b) => a.sortKey.localeCompare(b.sortKey));
 
-  // ── REMINDERS ──
-  const upcomingRem = reminders.filter(r=>!r.done).sort((a,b)=>new Date(a.datetime)-new Date(b.datetime)).slice(0,5);
-  document.getElementById('dash-rem-count').textContent = upcomingRem.length ? `${upcomingRem.length} upcoming` : '';
-  const remEl = document.getElementById('dash-rem-list');
-  const remCatIcon={Work:'💼',Personal:'🙂',Health:'💊',Finance:'💰',Family:'👨‍👩‍👧',Other:'📌'};
-  if(!upcomingRem.length){
-    remEl.innerHTML=`<div class="dash-empty">No pending reminders</div>`;
-  } else {
-    remEl.innerHTML = upcomingRem.map(r=>{
-      const dt=new Date(r.datetime); const diff=dt-now;
-      const isOD=diff<0;
-      const isToday=dt.toISOString().slice(0,10)===tds;
-      const timeStr = isOD ? 'Overdue' : isToday ? `Today ${fmtDT(r.datetime).split('·')[1]?.trim()||''}` : fmtDT(r.datetime);
-      const col = isOD?'var(--red)':isToday?'var(--orange)':'var(--green)';
-      return `<div class="dash-row-item" onclick="navTo('reminders')">
-        <div class="dash-row-icon" style="background:${isOD?'var(--red-bg)':isToday?'var(--orange-bg)':'var(--green-bg)'}">${remCatIcon[r.cat]||'📌'}</div>
-        <div class="dash-row-body">
-          <div class="dash-row-title">${esc(r.title)}</div>
-          <div class="dash-row-sub">${r.cat}</div>
-        </div>
-        <div class="dash-row-right" style="color:${col}">${timeStr}</div>
-      </div>`;
-    }).join('');
-  }
+  // Format time helper
+  const fmtTime = t => {
+    if(!t) return '';
+    const [h,m] = t.split(':');
+    const hr = +h; const mn = m;
+    const ampm = hr >= 12 ? 'PM' : 'AM';
+    return `${hr%12||12}:${mn} ${ampm}`;
+  };
 
-  // ── TODAY'S TIME LOG ──
-  const timeEl = document.getElementById('dash-time-body');
-  const catColors={Work:'#ff9f0a',Meeting:'#bf5af2',Learning:'#007aff',Exercise:'#30d158',Personal:'#ff375f',Admin:'#8d8d93',Other:'#5ac8fa'};
-  if(!todayJournal.length){
-    timeEl.innerHTML=`<div class="dash-empty">No time logged today — go to Journal to start tracking</div>`;
-  } else {
-    const bycat={};
-    todayJournal.forEach(e=>{bycat[e.cat]=(bycat[e.cat]||0)+e.dur;});
-    const total=Object.values(bycat).reduce((a,b)=>a+b,0);
-    const segs=Object.entries(bycat).map(([c,d])=>`<div class="dash-time-seg" style="flex:${d};background:${catColors[c]||'#ccc'};min-width:4px"></div>`).join('');
-    const rows=Object.entries(bycat).sort((a,b)=>b[1]-a[1]).map(([c,d])=>`
-      <div class="dash-row-item" onclick="navTo('journal')">
-        <div class="dash-row-icon" style="background:${catColors[c]||'#ccc'}22">${CAT[c]?.icon||'•'}</div>
-        <div class="dash-row-body">
-          <div class="dash-row-title">${c}</div>
-          <div class="dash-row-sub">${d} min · ${Math.round(d/total*100)}% of day</div>
-        </div>
-        <div style="width:60px;margin-left:8px">
-          <div style="height:4px;background:var(--bg3);border-radius:100px;overflow:hidden">
-            <div style="height:100%;width:${Math.round(d/total*100)}%;background:${catColors[c]||'#ccc'};border-radius:100px"></div>
+  // Current time indicator position
+  const currentTimeStr = `${String(hour).padStart(2,'0')}:${String(mins).padStart(2,'0')}`;
+
+  // Build HTML
+  let html = '';
+
+  // ── TIMED SECTION ──
+  if(timelineItems.length > 0){
+    html += `<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Today's Timeline</div>`;
+    html += `<div class="card" style="margin-bottom:20px;overflow:visible">`;
+
+    let pastDividerAdded = false;
+    let futureDividerAdded = false;
+
+    timelineItems.forEach((item, idx) => {
+      const isPast = item.sortKey < currentTimeStr;
+      const isCurrent = !isPast && (timelineItems[idx-1]?.sortKey||'') < currentTimeStr && item.sortKey >= currentTimeStr;
+
+      // Add "NOW" divider before first future item
+      if(!futureDividerAdded && !isPast){
+        futureDividerAdded = true;
+        html += `<div style="display:flex;align-items:center;gap:8px;padding:0 14px;margin:2px 0;">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
+          <div style="font-size:11px;font-weight:700;color:var(--red);">NOW · ${fmtTime(currentTimeStr)}</div>
+          <div style="flex:1;height:1px;background:var(--red);opacity:0.3;"></div>
+        </div>`;
+      }
+
+      if(item.type === 'task'){
+        const priColor = PRI_C[item.pri] || 'var(--text3)';
+        const tabIcon = item.tab === 'office' ? '🏢' : '🏠';
+        html += `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border2);${isPast?'opacity:0.45;':''}" onclick="navTo('todo')" class="dash-row-item">
+          <div style="min-width:54px;text-align:right;font-size:11px;font-weight:600;color:${item.today?'var(--accent)':'var(--text3)'};padding-top:2px;flex-shrink:0">${fmtTime(item.time)}</div>
+          <div style="width:2px;background:${priColor};border-radius:2px;min-height:36px;flex-shrink:0;margin-top:3px;opacity:0.6"></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:6px">
+              <span>${esc(item.text)}</span>
+              ${item.today ? '<span style="font-size:10px;color:var(--accent)">★</span>' : ''}
+            </div>
+            <div style="display:flex;gap:6px;margin-top:3px;flex-wrap:wrap;align-items:center">
+              <span style="font-size:11px;color:var(--text3)">${tabIcon} ${item.tab}</span>
+              <span style="font-size:10px;font-weight:600;color:${priColor}">${item.pri}</span>
+              ${item.due ? `<span style="font-size:10px;color:var(--text4)">Due ${fmtD(item.due)}</span>` : ''}
+            </div>
+            ${item.notes ? `<div style="font-size:11px;color:var(--text3);margin-top:2px">${esc(item.notes)}</div>` : ''}
           </div>
-        </div>
-      </div>`).join('');
-    timeEl.innerHTML=`<div style="padding:16px 20px 8px"><div class="dash-time-bar">${segs}</div><div style="display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:4px">${Object.entries(bycat).map(([c,d])=>`<span style="font-size:12px;color:${catColors[c]||'#ccc'};font-weight:600">■ ${c} ${d}m</span>`).join('')}</div></div>${rows}`;
-  }
+        </div>`;
+      } else {
+        // Journal entry
+        const catColor = CAT_C[item.cat] || '#ccc';
+        html += `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border2);${isPast?'opacity:0.55;':''}" onclick="navTo('journal')" class="dash-row-item">
+          <div style="min-width:54px;text-align:right;font-size:11px;font-weight:600;color:var(--text3);padding-top:2px;flex-shrink:0">${fmtTime(item.time)}</div>
+          <div style="width:2px;background:${catColor};border-radius:2px;min-height:36px;flex-shrink:0;margin-top:3px;opacity:0.8"></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:500;color:var(--text)">${esc(item.text)}</div>
+            <div style="display:flex;gap:6px;margin-top:3px;align-items:center">
+              <span style="font-size:10px;font-weight:600;color:${catColor}">${item.cat}</span>
+              ${item.dur ? `<span style="font-size:10px;color:var(--text3)">${item.dur} min</span>` : ''}
+            </div>
+          </div>
+        </div>`;
+      }
+    });
 
-  document.getElementById('dash-time-count').textContent = todayMins ? `${todayMins} min` : '';
-
-  // ── HABITS ──
-  const habMonth = months[mo];
-  document.getElementById('dash-hab-month').textContent = habMonth;
-  const habEl = document.getElementById('dash-hab-grid');
-  if(!habits.length){
-    habEl.innerHTML=`<div class="dash-empty" style="grid-column:1/-1">No habits yet — go to Habits to add some</div>`;
-  } else {
-    habEl.innerHTML = habits.map(h=>{
-      const cnt=Array.from({length:daysSoFar},(_,i)=>i+1).filter(d=>!!h.checks[`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`]).length;
-      const rate=Math.round(cnt/daysSoFar*100);
-      const doneToday=!!h.checks[tds];
-      return `<div class="dash-hab-card" onclick="navTo('habits')">
-        <div class="dash-hab-name">${doneToday?'✅':'⬜'} ${esc(h.name)}</div>
-        <div class="dash-hab-bar"><div class="dash-hab-fill" style="width:${rate}%"></div></div>
-        <div class="dash-hab-meta"><span>${cnt}/${daysSoFar} days</span><span style="font-weight:700;color:${rate>=70?'var(--green)':rate>=40?'var(--orange)':'var(--red)'}">${rate}%</span></div>
+    // If all items were in the past, show NOW at the end
+    if(!futureDividerAdded){
+      html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
+        <div style="font-size:11px;font-weight:700;color:var(--red);">NOW · ${fmtTime(currentTimeStr)}</div>
       </div>`;
-    }).join('');
+    }
+
+    html += `</div>`;
   }
+
+  // ── STARRED (no time) ──
+  if(starredNoTime.length){
+    html += `<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Today's Focus</div>`;
+    html += `<div class="card" style="margin-bottom:20px">`;
+    html += starredNoTime.map(t => `
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border2)" onclick="navTo('todo')" class="dash-row-item">
+        <div style="width:14px;height:14px;border-radius:50%;border:1.5px solid var(--text4);flex-shrink:0"></div>
+        <div style="flex:1;font-size:13px;font-weight:400;color:var(--text)">${esc(t.text)}</div>
+        <span style="font-size:10px;font-weight:600;color:${PRI_C[t.pri]||'var(--text3)'}">${t.pri}</span>
+        <span style="font-size:10px;color:var(--accent)">★</span>
+      </div>`).join('');
+    html += `</div>`;
+  }
+
+  // ── ALL OTHER TASKS (no time, not starred) — grouped by tab ──
+  if(otherTasks.length){
+    ['office','personal'].forEach(tab => {
+      const tabTasks = otherTasks.filter(t => t.tab === tab);
+      if(!tabTasks.length) return;
+      const tabIcon = tab === 'office' ? '🏢' : '🏠';
+      html += `<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">${tabIcon} ${tab === 'office' ? 'Office' : 'Personal'} Tasks</div>`;
+      html += `<div class="card" style="margin-bottom:20px">`;
+      const priOrder = {high:0,medium:1,low:2};
+      tabTasks.sort((a,b) => (priOrder[a.pri]||1)-(priOrder[b.pri]||1));
+      html += tabTasks.map(t => `
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 14px;border-bottom:1px solid var(--border2)" onclick="navTo('todo')" class="dash-row-item">
+          <div style="width:14px;height:14px;border-radius:3px;border:1.5px solid var(--text4);flex-shrink:0"></div>
+          <div style="flex:1;font-size:13px;color:var(--text)">${esc(t.text)}</div>
+          ${t.due ? `<span style="font-size:10px;color:${t.due<tds?'var(--red)':t.due===tds?'var(--orange)':'var(--text4)'}">${t.due===tds?'today':fmtD(t.due)}</span>` : ''}
+          <span style="width:6px;height:6px;border-radius:50%;background:${PRI_C[t.pri]||'var(--text4)'};flex-shrink:0"></span>
+        </div>`).join('');
+      html += `</div>`;
+    });
+  }
+
+  // Empty state
+  if(!timelineItems.length && !starredNoTime.length && !otherTasks.length){
+    html = `<div class="card"><div class="empty"><div class="empty-icon">✅</div><div class="empty-title">All clear!</div><div class="empty-sub">No tasks yet — add some in Tasks</div></div></div>`;
+  }
+
+  document.getElementById('dash-timeline').innerHTML = html;
 }
 
 
