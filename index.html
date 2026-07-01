@@ -693,15 +693,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
             </div>
           </div>
           <div class="field">
-            <label>Time per weekday — leave blank to skip that day</label>
+            <label>Start &amp; End time per weekday — leave both blank to skip that day</label>
             <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px">
-              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">MON</div><input type="time" id="rt-mon" style="padding:5px 3px;font-size:11px;text-align:center"></div>
-              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">TUE</div><input type="time" id="rt-tue" style="padding:5px 3px;font-size:11px;text-align:center"></div>
-              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">WED</div><input type="time" id="rt-wed" style="padding:5px 3px;font-size:11px;text-align:center"></div>
-              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">THU</div><input type="time" id="rt-thu" style="padding:5px 3px;font-size:11px;text-align:center"></div>
-              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">FRI</div><input type="time" id="rt-fri" style="padding:5px 3px;font-size:11px;text-align:center"></div>
-              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">SAT</div><input type="time" id="rt-sat" style="padding:5px 3px;font-size:11px;text-align:center"></div>
-              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">SUN</div><input type="time" id="rt-sun" style="padding:5px 3px;font-size:11px;text-align:center"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">MON</div><input type="time" id="rt-mon" placeholder="start" style="padding:5px 3px;font-size:11px;text-align:center;margin-bottom:4px"><input type="time" id="rt-mon-end" placeholder="end" style="padding:5px 3px;font-size:10px;text-align:center;border-color:var(--border2)"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">TUE</div><input type="time" id="rt-tue" style="padding:5px 3px;font-size:11px;text-align:center;margin-bottom:4px"><input type="time" id="rt-tue-end" style="padding:5px 3px;font-size:10px;text-align:center;border-color:var(--border2)"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">WED</div><input type="time" id="rt-wed" style="padding:5px 3px;font-size:11px;text-align:center;margin-bottom:4px"><input type="time" id="rt-wed-end" style="padding:5px 3px;font-size:10px;text-align:center;border-color:var(--border2)"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">THU</div><input type="time" id="rt-thu" style="padding:5px 3px;font-size:11px;text-align:center;margin-bottom:4px"><input type="time" id="rt-thu-end" style="padding:5px 3px;font-size:10px;text-align:center;border-color:var(--border2)"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">FRI</div><input type="time" id="rt-fri" style="padding:5px 3px;font-size:11px;text-align:center;margin-bottom:4px"><input type="time" id="rt-fri-end" style="padding:5px 3px;font-size:10px;text-align:center;border-color:var(--border2)"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">SAT</div><input type="time" id="rt-sat" style="padding:5px 3px;font-size:11px;text-align:center;margin-bottom:4px"><input type="time" id="rt-sat-end" style="padding:5px 3px;font-size:10px;text-align:center;border-color:var(--border2)"></div>
+              <div style="text-align:center"><div style="font-size:10px;font-weight:600;color:var(--text4);margin-bottom:4px">SUN</div><input type="time" id="rt-sun" style="padding:5px 3px;font-size:11px;text-align:center;margin-bottom:4px"><input type="time" id="rt-sun-end" style="padding:5px 3px;font-size:10px;text-align:center;border-color:var(--border2)"></div>
             </div>
           </div>
           <div class="btn-row">
@@ -1917,14 +1917,20 @@ function renderDashboard(){
         // Recurring task
         const priColor = PRI_C[item.pri] || 'var(--text3)';
         html += `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border2);${isPast?'opacity:0.45;':''}" onclick="navTo('todo')" class="dash-row-item">
-          <div style="min-width:54px;text-align:right;font-size:11px;font-weight:600;color:var(--text3);padding-top:2px;flex-shrink:0">${fmtTime(item.time)}</div>
-          <div style="width:2px;background:var(--text4);border-radius:2px;min-height:36px;flex-shrink:0;margin-top:3px;opacity:0.5;border-left:2px dashed var(--text4);width:0"></div>
+          <div style="min-width:54px;text-align:right;flex-shrink:0;padding-top:2px">
+            <div style="font-size:11px;font-weight:600;color:var(--text3)">${fmtTime(item.time)}</div>
+            ${item.endTime?`<div style="font-size:10px;color:var(--text4);margin-top:1px">${fmtTime(item.endTime)}</div>`:''}
+          </div>
+          <div style="width:2px;background:var(--text4);border-radius:2px;min-height:36px;flex-shrink:0;margin-top:3px;opacity:0.4"></div>
           <div style="flex:1;min-width:0">
             <div style="display:flex;align-items:center;gap:6px">
               <div style="font-size:13px;font-weight:500;color:var(--text)">${esc(item.text)}</div>
               <span style="font-size:10px;color:var(--text4);background:var(--bg3);padding:1px 5px;border-radius:2px">↻ recurring</span>
             </div>
-            <div style="font-size:11px;color:var(--text3);margin-top:2px">${item.cat}</div>
+            <div style="display:flex;gap:6px;margin-top:2px;align-items:center">
+              <span style="font-size:11px;color:var(--text3)">${item.cat}</span>
+              ${item.endTime?`<span style="font-size:10px;color:var(--text4)">${(()=>{const[sh,sm]=item.time.split(':');const[eh,em]=item.endTime.split(':');const dur=(+eh*60+ +em)-(+sh*60+ +sm);return dur>0?dur+'m':''})()}</span>`:''}
+            </div>
           </div>
         </div>`;
       } else {
@@ -2289,9 +2295,12 @@ function addRecurringTask(){
   const name = document.getElementById('rt-name').value.trim();
   if(!name){ alert('Enter a task name'); return; }
   const schedule = {};
+  const endSchedule = {};
   DAYS_SHORT.forEach(d => {
     const val = document.getElementById('rt-'+d)?.value;
+    const endVal = document.getElementById('rt-'+d+'-end')?.value;
     if(val) schedule[d] = val;
+    if(endVal) endSchedule[d] = endVal;
   });
   if(!Object.keys(schedule).length){ alert('Set at least one day time'); return; }
   const arr = S.g('recurring_tasks');
@@ -2300,7 +2309,8 @@ function addRecurringTask(){
     name,
     cat: document.getElementById('rt-cat').value,
     pri: document.getElementById('rt-pri').value,
-    schedule, // {mon:'09:00', tue:'09:30', ...}
+    schedule,    // {mon:'09:00', tue:'09:30', ...}
+    endSchedule, // {mon:'10:00', tue:'10:30', ...}
     active: true,
     created: today()
   };
@@ -2320,7 +2330,10 @@ function addRecurringTask(){
 
 function clearRTForm(){
   document.getElementById('rt-name').value='';
-  DAYS_SHORT.forEach(d=>{ const el=document.getElementById('rt-'+d); if(el) el.value=''; });
+  DAYS_SHORT.forEach(d=>{
+    const el=document.getElementById('rt-'+d); if(el) el.value='';
+    const el2=document.getElementById('rt-'+d+'-end'); if(el2) el2.value='';
+  });
 }
 
 function editRecurringTask(id){
@@ -2332,6 +2345,8 @@ function editRecurringTask(id){
   DAYS_SHORT.forEach(d=>{
     const el = document.getElementById('rt-'+d);
     if(el) el.value = t.schedule[d]||'';
+    const el2 = document.getElementById('rt-'+d+'-end');
+    if(el2) el2.value = (t.endSchedule&&t.endSchedule[d])||'';
   });
   rtEditId=id;
   document.getElementById('rt-cancel-btn').style.display='inline-flex';
@@ -2379,9 +2394,11 @@ function renderRecurringTasks(){
         <div class="recur-days">
           ${DAYS_SHORT.map((d,i)=>{
             const time=t.schedule[d];
+            const endTime=(t.endSchedule&&t.endSchedule[d])||'';
             return `<div class="recur-day">
               <div class="recur-day-label">${DAYS_LABELS[i]}</div>
               <div class="recur-day-time ${time?'active':'inactive'}">${time?fmtTime(time):'—'}</div>
+              ${time&&endTime?`<div style="font-size:9px;color:var(--text4);margin-top:2px">${fmtTime(endTime)}</div>`:''}
             </div>`;
           }).join('')}
         </div>
@@ -2406,6 +2423,7 @@ function getTodayRecurringItems(){
       type: 'recurring',
       time: t.schedule[dayKey],
       sortKey: t.schedule[dayKey],
+      endTime: (t.endSchedule&&t.endSchedule[dayKey])||'',
       id: t.id,
       text: t.name,
       cat: t.cat,
