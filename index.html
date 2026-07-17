@@ -531,7 +531,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">My Space</div>
-      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.3</span></div>
+      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.4</span></div>
     </div>
     <div class="nav-group">
       <div class="nav-label">Workspace</div>
@@ -680,20 +680,20 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="page" id="page-todo">
       <div class="page-title">Tasks</div>
       <div class="page-sub">Plan smart — focus on what matters today</div>
-      <div class="today-focus">
-        <div class="today-focus-title">Today's Focus</div>
-        <div id="today-list"><div class="today-empty">Star ☆ any task below to pull it onto your dashboard for today</div></div>
+      <div style="background:linear-gradient(135deg,var(--accent-bg),rgba(105,64,165,0.06));border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:16px;">
+        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Today's Focus</div>
+        <div id="today-list"><div class="today-empty" style="font-size:13px;color:var(--text4)">Star ☆ any task below to pull it onto your dashboard for today</div></div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
-        <div class="seg" id="todo-seg" style="margin-bottom:0">
-          <button class="seg-btn active" onclick="switchTodoTab('office',this)">Office</button>
-          <button class="seg-btn" onclick="switchTodoTab('personal',this)">Personal</button>
-          <button class="seg-btn" onclick="switchTodoTab('recurring',this)">Recurring</button>
+        <div style="display:flex;gap:2px;background:var(--bg3);border-radius:8px;padding:3px;" id="todo-seg">
+          <button class="seg-btn active" onclick="switchTodoTab('office',this)" style="border-radius:6px;padding:5px 16px">🏢 Office</button>
+          <button class="seg-btn" onclick="switchTodoTab('personal',this)" style="border-radius:6px;padding:5px 16px">🏠 Personal</button>
+          <button class="seg-btn" onclick="switchTodoTab('recurring',this)" style="border-radius:6px;padding:5px 16px">↻ Recurring</button>
         </div>
-        <div class="seg" id="todo-filter-seg" style="margin-bottom:0">
-          <button class="seg-btn active" onclick="switchTodoFilter('all',this)">All</button>
-          <button class="seg-btn" onclick="switchTodoFilter('unplanned',this)">Unplanned</button>
-          <button class="seg-btn" onclick="switchTodoFilter('planned',this)">Planned</button>
+        <div style="display:flex;gap:2px;background:var(--bg3);border-radius:8px;padding:3px;" id="todo-filter-seg">
+          <button class="seg-btn active" onclick="switchTodoFilter('all',this)" style="border-radius:6px;padding:5px 14px">All</button>
+          <button class="seg-btn" onclick="switchTodoFilter('unplanned',this)" style="border-radius:6px;padding:5px 14px">Unplanned</button>
+          <button class="seg-btn" onclick="switchTodoFilter('planned',this)" style="border-radius:6px;padding:5px 14px">Planned</button>
         </div>
       </div>
 
@@ -730,18 +730,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
       </div>
 
-      <div class="card" id="t-form-card">
+      <div class="card" id="t-form-card" style="border-radius:8px;overflow:visible">
         <div class="card-padded">
-          <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:10px;align-items:end;margin-bottom:10px">
-            <div class="field" style="margin-bottom:0"><label>Task</label><input type="text" id="t-text" placeholder="What needs to be done?"></div>
-            <div class="field" style="margin-bottom:0;min-width:100px"><label>Priority</label>
-              <select id="t-pri"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+          <div class="field"><input type="text" id="t-text" placeholder="✦  What needs to be done?" style="font-size:15px;font-weight:500;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:8px 4px;background:transparent;"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+            <div style="display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:4px 10px;">
+              <span style="font-size:11px;color:var(--text4)">Priority</span>
+              <select id="t-pri" style="border:none;background:transparent;font-size:12px;font-weight:600;color:var(--text);padding:0;width:auto;min-width:60px"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
             </div>
-            <div class="field" style="margin-bottom:0;min-width:120px"><label>Due Date</label><input type="date" id="t-date"></div>
-            <div class="field" style="margin-bottom:0;min-width:100px"><label>Start Time</label><input type="time" id="t-time"></div>
-            <div class="field" style="margin-bottom:0;min-width:100px"><label>End Time</label><input type="time" id="t-end-time"></div>
+            <div style="display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:4px 10px;">
+              <span style="font-size:11px;color:var(--text4)">Due</span>
+              <input type="date" id="t-date" style="border:none;background:transparent;font-size:12px;font-weight:500;color:var(--text);padding:0;width:auto;min-width:100px">
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:4px 10px;">
+              <span style="font-size:11px;color:var(--text4)">Start</span>
+              <input type="time" id="t-time" style="border:none;background:transparent;font-size:12px;font-weight:500;color:var(--text);padding:0;width:auto">
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:4px 10px;">
+              <span style="font-size:11px;color:var(--text4)">End</span>
+              <input type="time" id="t-end-time" style="border:none;background:transparent;font-size:12px;font-weight:500;color:var(--text);padding:0;width:auto">
+            </div>
           </div>
-          <div class="field"><label>Notes</label><textarea id="t-notes" placeholder="Details..." style="min-height:50px"></textarea></div>
+          <div class="field"><textarea id="t-notes" placeholder="Notes..." style="min-height:44px;border:none;border-top:1px solid var(--border2);border-radius:0;background:transparent;padding:8px 4px;font-size:13px;"></textarea></div>
           <div class="field">
             <label>Subtasks</label>
             <div id="t-subtasks-list" style="margin-bottom:6px"></div>
@@ -751,13 +761,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
             </div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-primary" onclick="addTodo()" id="t-add-btn">Add Task</button>
-            <button class="btn btn-ghost" id="t-cancel-btn" style="display:none" onclick="cancelTEdit()">Cancel</button>
+            <button class="btn btn-primary" onclick="addTodo()" id="t-add-btn" style="border-radius:7px;padding:8px 20px">Add Task</button>
+            <button class="btn btn-ghost" id="t-cancel-btn" style="display:none;border-radius:7px" onclick="cancelTEdit()">Cancel</button>
           </div>
         </div>
       </div>
       <!-- One-off task list -->
-      <div class="card" id="t-list-card"><div id="t-list"></div></div>
+      <div id="t-list-card" style="margin-top:4px"><div id="t-list"></div></div>
       <!-- Recurring task list -->
       <div id="rt-list-wrap" style="display:none">
         <div class="card"><div id="rt-list"></div></div>
@@ -1429,7 +1439,8 @@ function renderTodos(){
   if(!filtered.length){
     const emptyMsg={all:'No tasks yet','unplanned':'No unplanned tasks — everything has a date or time!',planned:'No planned tasks — add dates or times to tasks'};
     list.className='';
-    list.innerHTML=`<div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">${todoFilter==='unplanned'?'All planned!':todoFilter==='planned'?'Nothing planned yet':'All clear!'}</div><div class="empty-sub">${emptyMsg[todoFilter]||''}</div></div>`;return;
+    list.style.cssText='';
+    list.innerHTML=`<div class="empty" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:40px 24px"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">${todoFilter==='unplanned'?'All planned!':todoFilter==='planned'?'Nothing planned yet':'All clear!'}</div><div class="empty-sub">${emptyMsg[todoFilter]||''}</div></div>`;return;
   }
   const ord={high:0,medium:1,low:2};
   filtered.sort((a,b)=>{ if(a.done!==b.done) return a.done?1:-1; if(ord[a.pri]!==ord[b.pri]) return ord[a.pri]-ord[b.pri]; return (a.due||'9999').localeCompare(b.due||'9999'); });
@@ -1459,24 +1470,36 @@ function renderTodos(){
   };
   const useWide = filtered.length > 5 && window.innerWidth > 1200;
   list.className = useWide ? 'task-two-col' : '';
-  list.innerHTML=filtered.map(t=>`<div class="todo-item ${t.done?'is-done':''}">
-    <div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')">${t.done?'✓':''}</div>
-    <div class="t-body">
-      <div class="t-text">${esc(t.text)}</div>
-      ${t.notes?`<div class="t-sub">${esc(t.notes)}</div>`:''}
-      <div class="t-chips">
-        <span class="badge ${PRIM[t.pri]?.cls||'badge-muted'}">${PRIM[t.pri]?.lbl||t.pri}</span>
-        ${dueBadge(t)}
-        ${t.time?`<span class="badge badge-muted">⏰ ${t.time}${t.endTime?' – '+t.endTime:''}</span>`:''}
+  const PRI_DOT = {high:'var(--red)',medium:'var(--orange)',low:'var(--green)'};
+  list.className = '';
+  list.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;padding:4px 2px';
+  list.innerHTML=filtered.map(t=>{
+    const priDot = PRI_DOT[t.pri]||'var(--text4)';
+    const isDueOverdue = t.due && t.due < tdy;
+    const isDueToday2 = t.due === tdy;
+    return `<div class="task-card ${t.done?'is-done':''}" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;transition:var(--transition);cursor:default;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;width:3px;bottom:0;background:${priDot};border-radius:8px 0 0 8px;opacity:${t.done?0.3:0.7}"></div>
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="margin-top:2px;flex-shrink:0">${t.done?'✓':''}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;font-weight:500;color:var(--text);line-height:1.4;${t.done?'text-decoration:line-through;opacity:0.5':''}">${esc(t.text)}</div>
+          ${t.notes?`<div style="font-size:12px;color:var(--text3);margin-top:3px;line-height:1.4">${esc(t.notes)}</div>`:''}
+          <div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center">
+            ${isDueOverdue?`<span style="font-size:11px;font-weight:600;color:var(--red);background:var(--red-bg);padding:2px 7px;border-radius:4px">Overdue · ${fmtD(t.due)}</span>`:
+              isDueToday2?`<span style="font-size:11px;font-weight:600;color:var(--orange);background:var(--orange-bg);padding:2px 7px;border-radius:4px">Due today</span>`:
+              t.due?`<span style="font-size:11px;color:var(--text4);background:var(--bg3);padding:2px 7px;border-radius:4px">${fmtD(t.due)}</span>`:''}
+            ${t.time?`<span style="font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:4px">⏰ ${t.time}${t.endTime?' – '+t.endTime:''}</span>`:''}
+          </div>
+          ${renderSubtasks(t)}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:center;flex-shrink:0">
+          <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')" title="${t.today?'Remove from today':'Add to today'}" style="font-size:15px">${t.today?'★':'☆'}</button>
+          <button class="icon-btn edit" onclick="editTodo('${t.id}')" style="opacity:0.4" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.4">✎</button>
+          <button class="icon-btn" onclick="deleteTodo('${t.id}')" style="opacity:0.4" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.4">✕</button>
+        </div>
       </div>
-      ${renderSubtasks(t)}
-    </div>
-    <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')" title="${t.today?'Remove from today':'Add to today — show on dashboard'}">${t.today?'★':'☆'}</button>
-    <div class="t-actions">
-      <button class="icon-btn edit" onclick="editTodo('${t.id}')">✎</button>
-      <button class="icon-btn" onclick="deleteTodo('${t.id}')">✕</button>
-    </div>
-  </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ══════════════════════════════════════════
@@ -2401,7 +2424,8 @@ function renderRecurringTasks(){
   if(!list) return;
   if(!arr.length){
     list.className='';
-    list.innerHTML=`<div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">↻</div><div class="empty-title">No recurring tasks</div><div class="empty-sub">Add tasks that repeat on a weekly schedule</div></div>`;
+    list.style.cssText='';
+    list.innerHTML=`<div class="empty" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:40px 24px"><div class="empty-icon" style="font-size:20px;opacity:0.3">↻</div><div class="empty-title">No recurring tasks</div><div class="empty-sub">Add tasks that repeat on a weekly schedule</div></div>`;
     return;
   }
   const fmtTime=t=>{if(!t)return'—';const[h,m]=t.split(':');const hr=+h;return `${hr%12||12}:${m}${hr>=12?'pm':'am'}`;}
