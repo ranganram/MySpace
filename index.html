@@ -531,7 +531,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">My Space</div>
-      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.4</span></div>
+      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.5</span></div>
     </div>
     <div class="nav-group">
       <div class="nav-label">Workspace</div>
@@ -680,9 +680,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="page" id="page-todo">
       <div class="page-title">Tasks</div>
       <div class="page-sub">Plan smart — focus on what matters today</div>
-      <div style="background:linear-gradient(135deg,var(--accent-bg),rgba(105,64,165,0.06));border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:16px;">
-        <div style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">Today's Focus</div>
-        <div id="today-list"><div class="today-empty" style="font-size:13px;color:var(--text4)">Star ☆ any task below to pull it onto your dashboard for today</div></div>
+      <div style="background:var(--accent-bg);border:1px solid rgba(35,131,226,0.15);border-radius:8px;padding:10px 14px;margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:7px">Today's Focus</div>
+        <div id="today-list"><div style="font-size:12.5px;color:var(--text4)">Star ☆ any task to pull it onto your dashboard for today</div></div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
         <div style="display:flex;gap:2px;background:var(--bg3);border-radius:8px;padding:3px;" id="todo-seg">
@@ -730,28 +730,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
       </div>
 
-      <div class="card" id="t-form-card" style="border-radius:8px;overflow:visible">
-        <div class="card-padded">
-          <div class="field"><input type="text" id="t-text" placeholder="✦  What needs to be done?" style="font-size:15px;font-weight:500;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:8px 4px;background:transparent;"></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
-            <div style="display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:4px 10px;">
-              <span style="font-size:11px;color:var(--text4)">Priority</span>
-              <select id="t-pri" style="border:none;background:transparent;font-size:12px;font-weight:600;color:var(--text);padding:0;width:auto;min-width:60px"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:4px 10px;">
+      <div id="t-form-card" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.07);margin-bottom:16px;overflow:hidden;">
+        <div style="padding:14px 16px 10px">
+          <input type="text" id="t-text" placeholder="Add a task..." style="font-size:14px;font-weight:500;border:none;width:100%;outline:none;background:transparent;color:var(--text);padding:0;" />
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center">
+            <select id="t-pri" style="border:1px solid var(--border);background:var(--bg3);border-radius:6px;font-size:12px;font-weight:500;color:var(--text);padding:3px 8px;cursor:pointer;outline:none;">
+              <option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option>
+            </select>
+            <div style="display:flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--bg3);border-radius:6px;padding:3px 8px">
               <span style="font-size:11px;color:var(--text4)">Due</span>
-              <input type="date" id="t-date" style="border:none;background:transparent;font-size:12px;font-weight:500;color:var(--text);padding:0;width:auto;min-width:100px">
+              <input type="date" id="t-date" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:120px">
             </div>
-            <div style="display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:4px 10px;">
-              <span style="font-size:11px;color:var(--text4)">Start</span>
-              <input type="time" id="t-time" style="border:none;background:transparent;font-size:12px;font-weight:500;color:var(--text);padding:0;width:auto">
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:4px 10px;">
-              <span style="font-size:11px;color:var(--text4)">End</span>
-              <input type="time" id="t-end-time" style="border:none;background:transparent;font-size:12px;font-weight:500;color:var(--text);padding:0;width:auto">
+            <div style="display:flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--bg3);border-radius:6px;padding:3px 8px">
+              <span style="font-size:11px;color:var(--text4)">⏰</span>
+              <input type="time" id="t-time" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:80px">
+              <span style="font-size:11px;color:var(--text4)">–</span>
+              <input type="time" id="t-end-time" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:80px">
             </div>
           </div>
-          <div class="field"><textarea id="t-notes" placeholder="Notes..." style="min-height:44px;border:none;border-top:1px solid var(--border2);border-radius:0;background:transparent;padding:8px 4px;font-size:13px;"></textarea></div>
+        </div>
+        <div style="border-top:1px solid var(--border2);padding:8px 16px">
+          <textarea id="t-notes" placeholder="Notes (optional)..." style="width:100%;border:none;background:transparent;font-size:12.5px;color:var(--text);outline:none;resize:none;min-height:32px;font-family:var(--font);line-height:1.5;padding:0;"></textarea>
+        </div>
           <div class="field">
             <label>Subtasks</label>
             <div id="t-subtasks-list" style="margin-bottom:6px"></div>
@@ -1430,7 +1430,7 @@ const PRIM={high:{lbl:'High',cls:'badge-red'},medium:{lbl:'Medium',cls:'badge-or
 function renderTodos(){
   const arr=S.g('todos');
   const tdArr=arr.filter(t=>t.today&&!t.done);
-  document.getElementById('today-list').innerHTML=tdArr.length?tdArr.map(t=>`<div style="display:flex;align-items:center;gap:12px;padding:6px 0"><div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="flex-shrink:0">${t.done?'✓':''}</div><span style="font-size:15px;font-weight:600;flex:1;color:var(--text)">${esc(t.text)}</span><span class="badge badge-muted" style="font-size:11px">${t.tab}</span><button class="star-btn on" onclick="toggleToday('${t.id}')" style="font-size:16px">★</button></div>`).join(''):`<div class="today-empty">Star ☆ any task below to pull it onto your dashboard for today</div>`;
+  document.getElementById('today-list').innerHTML=tdArr.length?tdArr.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(35,131,226,0.1)"><div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="flex-shrink:0;width:14px;height:14px">${t.done?'✓':''}</div><span style="font-size:13px;font-weight:500;flex:1;color:var(--text)">${esc(t.text)}</span><span style="font-size:10px;color:var(--accent);opacity:0.6">${t.tab}</span><button class="star-btn on" onclick="toggleToday('${t.id}')" style="font-size:13px;color:var(--orange)">★</button></div>`).join(''):`<div style="font-size:12.5px;color:var(--text4)">Star ☆ any task to pull it onto your dashboard for today</div>`;
   const list=document.getElementById('t-list');
   let filtered=arr.filter(t=>t.tab===todoTab);
   // Apply filter
@@ -1472,30 +1472,28 @@ function renderTodos(){
   list.className = useWide ? 'task-two-col' : '';
   const PRI_DOT = {high:'var(--red)',medium:'var(--orange)',low:'var(--green)'};
   list.className = '';
-  list.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px;padding:4px 2px';
+  list.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;padding:2px';
   list.innerHTML=filtered.map(t=>{
     const priDot = PRI_DOT[t.pri]||'var(--text4)';
     const isDueOverdue = t.due && t.due < tdy;
     const isDueToday2 = t.due === tdy;
-    return `<div class="task-card ${t.done?'is-done':''}" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;transition:var(--transition);cursor:default;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;left:0;width:3px;bottom:0;background:${priDot};border-radius:8px 0 0 8px;opacity:${t.done?0.3:0.7}"></div>
-      <div style="display:flex;align-items:flex-start;gap:10px">
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px 10px 14px;transition:box-shadow 0.15s;position:relative;overflow:hidden;${t.done?'opacity:0.5':''}" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='none'">
+      <div style="position:absolute;top:0;left:0;width:3px;bottom:0;background:${priDot};opacity:0.7;border-radius:8px 0 0 8px"></div>
+      <div style="display:flex;align-items:flex-start;gap:8px">
         <div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="margin-top:2px;flex-shrink:0">${t.done?'✓':''}</div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13.5px;font-weight:500;color:var(--text);line-height:1.4;${t.done?'text-decoration:line-through;opacity:0.5':''}">${esc(t.text)}</div>
-          ${t.notes?`<div style="font-size:12px;color:var(--text3);margin-top:3px;line-height:1.4">${esc(t.notes)}</div>`:''}
-          <div style="display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;align-items:center">
-            ${isDueOverdue?`<span style="font-size:11px;font-weight:600;color:var(--red);background:var(--red-bg);padding:2px 7px;border-radius:4px">Overdue · ${fmtD(t.due)}</span>`:
-              isDueToday2?`<span style="font-size:11px;font-weight:600;color:var(--orange);background:var(--orange-bg);padding:2px 7px;border-radius:4px">Due today</span>`:
-              t.due?`<span style="font-size:11px;color:var(--text4);background:var(--bg3);padding:2px 7px;border-radius:4px">${fmtD(t.due)}</span>`:''}
-            ${t.time?`<span style="font-size:11px;color:var(--text3);background:var(--bg3);padding:2px 7px;border-radius:4px">⏰ ${t.time}${t.endTime?' – '+t.endTime:''}</span>`:''}
-          </div>
+          <div style="font-size:13px;font-weight:500;color:var(--text);line-height:1.35;${t.done?'text-decoration:line-through':''}">${esc(t.text)}</div>
+          ${t.notes?`<div style="font-size:11.5px;color:var(--text3);margin-top:2px">${esc(t.notes)}</div>`:''}
+          ${(t.due||t.time)?`<div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+            ${isDueOverdue?`<span style="font-size:10.5px;font-weight:600;color:var(--red);background:var(--red-bg);padding:1px 6px;border-radius:3px">⚠ ${fmtD(t.due)}</span>`:isDueToday2?`<span style="font-size:10.5px;font-weight:600;color:var(--orange);background:var(--orange-bg);padding:1px 6px;border-radius:3px">Due today</span>`:t.due?`<span style="font-size:10.5px;color:var(--text4);background:var(--bg3);padding:1px 6px;border-radius:3px">${fmtD(t.due)}</span>`:''}
+            ${t.time?`<span style="font-size:10.5px;color:var(--text3);background:var(--bg3);padding:1px 6px;border-radius:3px">⏰ ${t.time}${t.endTime?' – '+t.endTime:''}</span>`:''}
+          </div>`:''}
           ${renderSubtasks(t)}
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;align-items:center;flex-shrink:0">
-          <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')" title="${t.today?'Remove from today':'Add to today'}" style="font-size:15px">${t.today?'★':'☆'}</button>
-          <button class="icon-btn edit" onclick="editTodo('${t.id}')" style="opacity:0.4" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.4">✎</button>
-          <button class="icon-btn" onclick="deleteTodo('${t.id}')" style="opacity:0.4" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.4">✕</button>
+        <div style="display:flex;gap:2px;align-items:center;flex-shrink:0;margin-top:1px">
+          <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')" title="${t.today?'Remove from today':'Add to today'}" style="font-size:13px;width:20px;height:20px">${t.today?'★':'☆'}</button>
+          <button class="icon-btn edit" onclick="editTodo('${t.id}')" style="width:20px;height:20px;font-size:11px;opacity:0" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">✎</button>
+          <button class="icon-btn" onclick="deleteTodo('${t.id}')" style="width:20px;height:20px;font-size:11px;opacity:0" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">✕</button>
         </div>
       </div>
     </div>`;
