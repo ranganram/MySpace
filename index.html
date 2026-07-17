@@ -11,7 +11,7 @@
   --green: #0f7b6c; --red: #e03e3e; --orange: #d9730d;
   --pink: #ad1a72; --teal: #0b6e99; --purple: #6940a5; --yellow: #dfab01;
   --radius-xl: 6px; --radius-lg: 6px; --radius: 4px; --radius-sm: 4px; --radius-xs: 3px;
-  --sidebar-w: 240px;
+  --sidebar-w: 220px;
   --transition: all 0.15s ease;
 }
 [data-theme="light"] {
@@ -90,7 +90,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 
 /* ── MAIN ── */
 .main{flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg);-webkit-overflow-scrolling:touch;transition:background 0.3s;}
-.main-inner{padding:32px 60px 48px;max-width:860px;}
+.main-inner{padding:28px 40px 48px;max-width:100%;}
 .page{display:none;animation:pageIn 0.3s ease both;}
 .page.active{display:block;}
 @keyframes pageIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
@@ -113,7 +113,7 @@ input[type=text],input[type=date],input[type=time],input[type=number],input[type
 input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(35,131,226,0.15);}
 textarea{resize:vertical;min-height:72px;line-height:1.5;}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238e8e93' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
-.field-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));}
+.field-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));}
 
 /* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 14px;border-radius:var(--radius-sm);border:none;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:var(--transition);user-select:none;}
@@ -209,7 +209,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .today-focus{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;}
 .today-focus-title{font-size:11px;font-weight:600;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.4px;}
 .today-empty{font-size:14px;color:var(--text3);}
-.todo-item{display:flex;align-items:flex-start;gap:8px;padding:5px 12px;border-bottom:1px solid var(--border2);transition:var(--transition);}
+.todo-item{display:flex;align-items:flex-start;gap:10px;padding:7px 16px;border-bottom:1px solid var(--border2);transition:var(--transition);}
 .todo-item:last-child{border-bottom:none;}
 .todo-item:hover{background:var(--surfaceHov);}
 .todo-item.is-done{opacity:0.45;}
@@ -220,7 +220,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .t-text{font-size:13.5px;font-weight:400;color:var(--text);line-height:1.4;}
 .todo-item.is-done .t-text{text-decoration:line-through;}
 .t-sub{font-size:12px;color:var(--text3);margin-top:2px;line-height:1.5;}
-.t-chips{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
+.t-chips{display:flex;gap:4px;margin-top:3px;flex-wrap:wrap;align-items:center;}
 .star-btn{width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:var(--transition);border:none;background:transparent;flex-shrink:0;}
 .star-btn.on{color:var(--orange);}
 .star-btn.off{color:var(--border);}
@@ -323,6 +323,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   .main-inner{padding:16px 12px 60px;}
   .card-padded{padding:12px 14px;}
   .field-grid{grid-template-columns:1fr;}
+  #t-form-card .card-padded > div:first-child{grid-template-columns:1fr!important;}
   .dash-grid{grid-template-columns:1fr 1fr;gap:8px;}
   .dash-card{padding:10px 12px;}
   .dash-card-val{font-size:18px;}
@@ -382,6 +383,23 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .watch-actions{opacity:0;transition:var(--transition);display:flex;gap:6px;}
 .watch-header:hover .watch-actions{opacity:1;}
 @media(max-width:680px){.watch-actions{opacity:1;}}
+
+/* ── WIDE LAYOUT ── */
+@media(min-width:900px){
+  .main-inner{padding:24px 36px 48px;}
+  /* Task list as full-width dense rows */
+  #t-list .todo-item{padding:7px 20px;}
+  /* Dashboard fills width */
+  #dash-timeline .card{max-width:100%;}
+}
+@media(min-width:1200px){
+  /* Two-col task layout on very wide screens */
+  .task-two-col{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .task-two-col .todo-item{border-right:1px solid var(--border2);}
+  .task-two-col .todo-item:nth-child(even){border-right:none;}
+}
+/* Better star alignment */
+.star-btn{width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:var(--transition);border:none;background:transparent;flex-shrink:0;padding:0;margin-top:1px;}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(128,128,128,0.3);border-radius:10px;}
@@ -513,7 +531,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">My Space</div>
-      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.2</span></div>
+      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.3</span></div>
     </div>
     <div class="nav-group">
       <div class="nav-label">Workspace</div>
@@ -714,16 +732,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
       <div class="card" id="t-form-card">
         <div class="card-padded">
-          <div class="field"><label>Task</label><input type="text" id="t-text" placeholder="What needs to be done?"></div>
-          <div class="field-grid">
-            <div class="field"><label>Priority</label>
-              <select id="t-pri"><option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option></select>
+          <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:10px;align-items:end;margin-bottom:10px">
+            <div class="field" style="margin-bottom:0"><label>Task</label><input type="text" id="t-text" placeholder="What needs to be done?"></div>
+            <div class="field" style="margin-bottom:0;min-width:100px"><label>Priority</label>
+              <select id="t-pri"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
             </div>
-            <div class="field"><label>Due Date</label><input type="date" id="t-date"></div>
-            <div class="field"><label>Start Time</label><input type="time" id="t-time"></div>
-            <div class="field"><label>End Time</label><input type="time" id="t-end-time"></div>
+            <div class="field" style="margin-bottom:0;min-width:120px"><label>Due Date</label><input type="date" id="t-date"></div>
+            <div class="field" style="margin-bottom:0;min-width:100px"><label>Start Time</label><input type="time" id="t-time"></div>
+            <div class="field" style="margin-bottom:0;min-width:100px"><label>End Time</label><input type="time" id="t-end-time"></div>
           </div>
-          <div class="field"><label>Notes</label><textarea id="t-notes" placeholder="Details..." style="min-height:60px"></textarea></div>
+          <div class="field"><label>Notes</label><textarea id="t-notes" placeholder="Details..." style="min-height:50px"></textarea></div>
           <div class="field">
             <label>Subtasks</label>
             <div id="t-subtasks-list" style="margin-bottom:6px"></div>
@@ -1410,6 +1428,7 @@ function renderTodos(){
   else if(todoFilter==='planned') filtered=filtered.filter(t=>(t.due||t.time)&&!t.done);
   if(!filtered.length){
     const emptyMsg={all:'No tasks yet','unplanned':'No unplanned tasks — everything has a date or time!',planned:'No planned tasks — add dates or times to tasks'};
+    list.className='';
     list.innerHTML=`<div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">${todoFilter==='unplanned'?'All planned!':todoFilter==='planned'?'Nothing planned yet':'All clear!'}</div><div class="empty-sub">${emptyMsg[todoFilter]||''}</div></div>`;return;
   }
   const ord={high:0,medium:1,low:2};
@@ -1438,6 +1457,8 @@ function renderTodos(){
       </div>`).join('')}
     </div>`;
   };
+  const useWide = filtered.length > 5 && window.innerWidth > 1200;
+  list.className = useWide ? 'task-two-col' : '';
   list.innerHTML=filtered.map(t=>`<div class="todo-item ${t.done?'is-done':''}">
     <div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')">${t.done?'✓':''}</div>
     <div class="t-body">
@@ -2379,6 +2400,7 @@ function renderRecurringTasks(){
   const list = document.getElementById('rt-list');
   if(!list) return;
   if(!arr.length){
+    list.className='';
     list.innerHTML=`<div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">↻</div><div class="empty-title">No recurring tasks</div><div class="empty-sub">Add tasks that repeat on a weekly schedule</div></div>`;
     return;
   }
