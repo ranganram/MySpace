@@ -227,6 +227,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .star-btn:hover{transform:scale(1.2);}
 .t-actions{opacity:0;transition:var(--transition);display:flex;gap:6px;align-items:center;flex-shrink:0;}
 .todo-item:hover .t-actions{opacity:1;}
+.inline-edit-text{border-radius:4px;}
+.inline-edit-text:hover{background:var(--bg3);}
+.inline-edit-text:focus{background:var(--surfaceHov);box-shadow:0 0 0 1px var(--accent);}
 
 /* ── NOTES ── */
 .notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
@@ -467,6 +470,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   .cal-day-col{min-width:110px;}
   .cal-nav-label{min-width:130px;font-size:12px;}
 }
+.cal-tray{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:2px;}
+.cal-chip{display:flex;align-items:center;gap:7px;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:600;cursor:grab;user-select:none;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:var(--transition);}
+.cal-chip:hover{filter:brightness(0.97);}
+.cal-chip:active{cursor:grabbing;}
+.cal-chip-dur{font-size:10px;font-weight:800;background:rgba(255,255,255,0.5);padding:1px 6px;border-radius:100px;}
+.cal-card{cursor:grab;}
+.cal-card:active{cursor:grabbing;}
+.cal-resize-handle{position:absolute;left:0;right:0;bottom:0;height:6px;cursor:ns-resize;}
+.cal-resize-handle:hover{background:rgba(0,0,0,0.1);}
 
 /* ── DAILY LOG ── */
 .log-tracker-row{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid var(--border2);transition:var(--transition);}
@@ -658,6 +670,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
       </div>
 
+      <div id="dash-cal-tray" class="cal-tray" style="display:none"></div>
+
       <div class="cal-wrap"><div class="cal-grid" id="dash-cal-grid"></div></div>
 
       <div id="dash-timeline"></div>
@@ -789,9 +803,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
             <div style="display:flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--bg3);border-radius:6px;padding:3px 8px">
               <span style="font-size:11px;color:var(--text4)">⏰</span>
               <input type="time" id="t-time" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:80px">
-              <span style="font-size:11px;color:var(--text4)">–</span>
-              <input type="time" id="t-end-time" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:80px">
             </div>
+            <div style="display:flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--bg3);border-radius:6px;padding:3px 8px" title="How many hours this task takes">
+              <span style="font-size:11px;color:var(--text4)">⏱</span>
+              <input type="number" id="t-dur" placeholder="Hrs" min="0.25" step="0.25" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:52px">
+              <span style="font-size:11px;color:var(--text4)">hrs</span>
+            </div>
+            <input type="hidden" id="t-end-time">
           </div>
         </div>
         <div style="border-top:1px solid var(--border2);padding:8px 16px">
@@ -1377,20 +1395,48 @@ function addTodo(){
   const arr=S.g('todos');
   const due=document.getElementById('t-date')?.value||'';
   const ttime=document.getElementById('t-time')?.value||'';
-  const tendtime=document.getElementById('t-end-time')?.value||'';
+  const durHoursVal=document.getElementById('t-dur')?.value||'';
+  const durMin = durHoursVal ? Math.max(5,Math.round(parseFloat(durHoursVal)*60)) : 0;
   if(tEditId){
     const t=arr.find(x=>x.id===tEditId);
-    if(t){t.text=text;t.notes=document.getElementById('t-notes').value.trim();t.pri=document.getElementById('t-pri').value;t.due=due;t.time=ttime;t.endTime=tendtime;t.subtasks=collectSubtasks();}
+    if(t){
+      t.text=text;t.notes=document.getElementById('t-notes').value.trim();t.pri=document.getElementById('t-pri').value;t.due=due;t.time=ttime;
+      t.durMin = durMin || t.durMin || 0;
+      t.endTime = (ttime && t.durMin) ? minToTime(timeToMin(ttime)+t.durMin) : (document.getElementById('t-end-time')?.value||'');
+      t.subtasks=collectSubtasks();
+    }
     tEditId=null;
     const cancelBtn=document.getElementById('t-cancel-btn');
     if(cancelBtn) cancelBtn.style.display='none';
   } else {
-    arr.push({id:uid(),tab:todoTab,text,notes:document.getElementById('t-notes').value.trim(),pri:document.getElementById('t-pri').value,due,time:ttime,endTime:tendtime,subtasks:collectSubtasks(),done:false,today:false,created:today()});
+    const endTime = (ttime && durMin) ? minToTime(timeToMin(ttime)+durMin) : '';
+    arr.push({id:uid(),tab:todoTab,text,notes:document.getElementById('t-notes').value.trim(),pri:document.getElementById('t-pri').value,due,time:ttime,durMin,endTime,subtasks:collectSubtasks(),done:false,today:false,created:today()});
   }
   S.s('todos',arr);
-  ['t-text','t-notes','t-date','t-time','t-end-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['t-text','t-notes','t-date','t-time','t-dur'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const endEl=document.getElementById('t-end-time'); if(endEl) endEl.value='';
   clearSubtaskForm();
   renderTodos();
+  if(typeof renderDashCalendar==='function') renderDashCalendar();
+}
+function saveInlineTodo(id, field, value){
+  const arr=S.g('todos');
+  const t=arr.find(x=>x.id===id);
+  if(!t) return;
+  if(field==='text'){
+    const v=(value||'').trim();
+    if(v) t.text=v;
+  } else if(field==='dur'){
+    const hrs=parseFloat(value);
+    t.durMin=(!isNaN(hrs)&&hrs>0)?Math.round(hrs*60):0;
+    t.endTime=(t.time&&t.durMin)?minToTime(timeToMin(t.time)+t.durMin):'';
+  } else if(field==='time'){
+    t.time=value||'';
+    t.endTime=(t.time&&t.durMin)?minToTime(timeToMin(t.time)+t.durMin):'';
+  }
+  S.s('todos',arr);
+  renderTodos();
+  if(typeof renderDashCalendar==='function') renderDashCalendar();
 }
 function toggleDone(id){const arr=S.g('todos');const t=arr.find(x=>x.id===id);if(t)t.done=!t.done;S.s('todos',arr);renderTodos();}
 function toggleToday(id){const arr=S.g('todos');const t=arr.find(x=>x.id===id);if(t)t.today=!t.today;S.s('todos',arr);renderTodos();}
@@ -1454,6 +1500,7 @@ function editTodo(id){
   document.getElementById('t-pri').value=t.pri;
   if(document.getElementById('t-date')) document.getElementById('t-date').value=t.due||'';
   if(document.getElementById('t-time')) document.getElementById('t-time').value=t.time||'';
+  if(document.getElementById('t-dur')) document.getElementById('t-dur').value=t.durMin?(Math.round((t.durMin/60)*100)/100):'';
   if(document.getElementById('t-end-time')) document.getElementById('t-end-time').value=t.endTime||'';
   loadSubtasksIntoForm(t.subtasks||[]);
   // Switch to correct tab
@@ -1466,7 +1513,7 @@ function editTodo(id){
 }
 function cancelTEdit(){
   tEditId=null;
-  ['t-text','t-notes','t-date','t-time','t-end-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['t-text','t-notes','t-date','t-time','t-dur','t-end-time'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   clearSubtaskForm();
   const cancelBtn=document.getElementById('t-cancel-btn');
   if(cancelBtn) cancelBtn.style.display='none';
@@ -1527,12 +1574,20 @@ function renderTodos(){
       <div style="display:flex;align-items:flex-start;gap:8px">
         <div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="margin-top:2px;flex-shrink:0">${t.done?'✓':''}</div>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:500;color:var(--text);line-height:1.35;${t.done?'text-decoration:line-through':''}">${esc(t.text)}</div>
+          <input type="text" class="inline-edit-text" value="${esc(t.text)}" style="font-size:13px;font-weight:500;color:var(--text);line-height:1.35;border:none;background:transparent;width:100%;padding:1px 3px;margin:-1px -3px;outline:none;font-family:var(--font);${t.done?'text-decoration:line-through':''}" onblur="saveInlineTodo('${t.id}','text',this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
           ${t.notes?`<div style="font-size:11.5px;color:var(--text3);margin-top:2px">${esc(t.notes)}</div>`:''}
-          ${(t.due||t.time)?`<div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">
+          <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;align-items:center">
             ${isDueOverdue?`<span style="font-size:10.5px;font-weight:600;color:var(--red);background:var(--red-bg);padding:1px 6px;border-radius:3px">⚠ ${fmtD(t.due)}</span>`:isDueToday2?`<span style="font-size:10.5px;font-weight:600;color:var(--orange);background:var(--orange-bg);padding:1px 6px;border-radius:3px">Due today</span>`:t.due?`<span style="font-size:10.5px;color:var(--text4);background:var(--bg3);padding:1px 6px;border-radius:3px">${fmtD(t.due)}</span>`:''}
-            ${t.time?`<span style="font-size:10.5px;color:var(--text3);background:var(--bg3);padding:1px 6px;border-radius:3px">⏰ ${t.time}${t.endTime?' – '+t.endTime:''}</span>`:''}
-          </div>`:''}
+            <span style="display:inline-flex;align-items:center;gap:3px;background:var(--bg3);border-radius:3px;padding:1px 5px" title="Start time">
+              <span style="font-size:10px">⏰</span>
+              <input type="time" value="${t.time||''}" onchange="saveInlineTodo('${t.id}','time',this.value)" style="border:none;background:transparent;font-size:10.5px;color:var(--text3);padding:0;outline:none;width:62px;font-family:var(--font)">
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:3px;background:var(--bg3);border-radius:3px;padding:1px 5px" title="Duration, in hours">
+              <span style="font-size:10px">⏱</span>
+              <input type="number" min="0.25" step="0.25" value="${t.durMin?(Math.round((t.durMin/60)*100)/100):''}" placeholder="hrs" onchange="saveInlineTodo('${t.id}','dur',this.value)" style="border:none;background:transparent;font-size:10.5px;color:var(--text3);padding:0;outline:none;width:36px;font-family:var(--font)">
+            </span>
+            ${t.time&&t.endTime?`<span style="font-size:10px;color:var(--text4)">→ ${t.endTime}</span>`:''}
+          </div>
           ${renderSubtasks(t)}
         </div>
         <div style="display:flex;gap:2px;align-items:center;flex-shrink:0;margin-top:1px">
@@ -2193,11 +2248,11 @@ function getCalItemsForDate(dateObj){
   const ds = toDS(dateObj);
   const items = [];
   S.g('todos').filter(t=>!t.done && t.due===ds && t.time).forEach(t=>{
-    items.push({kind:'task', time:t.time, endTime:t.endTime||'', text:t.text, sub:t.tab, id:t.id, pri:t.pri});
+    items.push({kind:'task', time:t.time, endTime:t.endTime||'', durMin:t.durMin||45, text:t.text, sub:t.tab, id:t.id, pri:t.pri});
   });
   S.g('journal').filter(e=>e.date===ds && e.start).forEach(e=>{
     const endM = timeToMin(e.start) + (e.dur||30);
-    items.push({kind:'journal', time:e.start, endTime:minToTime(endM), text:e.title, sub:e.cat, id:e.id});
+    items.push({kind:'journal', time:e.start, endTime:minToTime(endM), durMin:e.dur||30, text:e.title, sub:e.cat, id:e.id});
   });
   const dow = dateObj.getDay(); const dayMap=[6,0,1,2,3,4,5]; const dayKey=DAYS_SHORT[dayMap[dow]];
   S.g('recurring_tasks').filter(t=>t.active!==false && t.schedule[dayKey]).forEach(t=>{
@@ -2212,14 +2267,36 @@ function calCardStyle(item){
   return TASK_COL[item.sub] || TASK_COL.office;
 }
 
+function getCalRowH(){ return dashViewMode==='day' ? 56 : 46; }
+function fmtHrs(min){ if(!min) return ''; const h=Math.round((min/60)*100)/100; return (h%1===0?h.toFixed(0):h.toFixed(2).replace(/0+$/,'').replace(/\.$/,''))+'h'; }
+
+function renderCalTray(dates){
+  const tray = document.getElementById('dash-cal-tray');
+  if(!tray) return;
+  const dsSet = dates.map(toDS);
+  const tds = toDS(new Date());
+  const todos = S.g('todos').filter(t=>!t.done && !t.time && (dsSet.includes(t.due) || (!t.due && t.today && dsSet.includes(tds))));
+  if(!todos.length){ tray.innerHTML=''; tray.style.display='none'; return; }
+  tray.style.display='flex';
+  tray.innerHTML = `<span style="font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;align-self:center;margin-right:2px">Unscheduled — drag onto a time ▸</span>` +
+    todos.map(t=>{
+      const col = TASK_COL[t.tab]||TASK_COL.office;
+      return `<div class="cal-chip" draggable="true" ondragstart="calDragStart(event,'${t.id}')" style="background:${col.bg};border-left:3px solid ${col.bar};color:${col.c}">
+        <span>${t.tab==='office'?'🏢':'🏠'} ${esc(t.text)}</span>
+        <span class="cal-chip-dur">${t.durMin?fmtHrs(t.durMin):'set hrs'}</span>
+      </div>`;
+    }).join('');
+}
+
 function renderDashCalendar(){
   const grid = document.getElementById('dash-cal-grid');
   if(!grid) return;
   const dates = getDashDates();
   updateDashLabel(dates);
+  renderCalTray(dates);
 
   const rangeStart = CAL_HOUR_START*60, rangeEnd = CAL_HOUR_END*60;
-  const rowH = dashViewMode==='day' ? 56 : 46; // px per hour
+  const rowH = getCalRowH(); // px per hour
   const hourCount = CAL_HOUR_END-CAL_HOUR_START;
   const gridH = hourCount*rowH;
   const tds = toDS(new Date());
@@ -2245,16 +2322,21 @@ function renderDashCalendar(){
     const cards = items.map(item=>{
       const st = calCardStyle(item);
       let startM = Math.max(timeToMin(item.time), rangeStart);
-      let endM = item.endTime ? timeToMin(item.endTime) : startM+45;
+      let endM = item.endTime ? timeToMin(item.endTime) : startM+(item.durMin||45);
       if(endM<=startM) endM = startM+30;
       endM = Math.min(endM, rangeEnd);
       const top = (startM-rangeStart)/60*rowH;
       const height = Math.max((endM-startM)/60*rowH, 22);
       const icon = item.kind==='task' ? (item.sub==='office'?'🏢':'🏠') : item.kind==='recurring' ? '↻' : '🕐';
-      return `<div class="cal-card" style="top:${top}px;height:${height}px;background:${st.bg};border-left:3px solid ${st.bar}"
-        onclick="navTo('${item.kind==='journal'?'journal':'todo'}')" title="${esc(item.text)}">
+      const isTask = item.kind==='task';
+      const dragAttr = isTask ? `draggable="true" ondragstart="calDragStart(event,'${item.id}')"` : '';
+      const resizeHandle = isTask ? `<div class="cal-resize-handle" onmousedown="calResizeStart(event,'${item.id}')" title="Drag to change duration"></div>` : '';
+      const clickNav = isTask ? "navTo('todo')" : "navTo('journal')";
+      return `<div class="cal-card" ${dragAttr} style="top:${top}px;height:${height}px;background:${st.bg};border-left:3px solid ${st.bar}"
+        onclick="${clickNav}" title="${esc(item.text)}${item.durMin?' — '+fmtHrs(item.durMin):''}">
         <div class="cal-card-time" style="color:${st.c}">${fmt12(item.time)}</div>
         <div class="cal-card-title" style="color:${st.c}">${icon} ${esc(item.text)}</div>
+        ${resizeHandle}
       </div>`;
     }).join('');
     return `<div class="cal-day-col ${isToday?'is-today':''}">
@@ -2262,11 +2344,86 @@ function renderDashCalendar(){
         <div class="cal-day-dow">${CAL_DOW[d.getDay()]}</div>
         <div class="cal-day-num ${isToday?'today-num':''}">${d.getDate()}</div>
       </div>
-      <div class="cal-day-body" style="height:${gridH}px">${hourLines}${nowLine}${cards}</div>
+      <div class="cal-day-body" style="height:${gridH}px" ondragover="calDragOver(event)" ondrop="calDrop(event,'${ds}')">${hourLines}${nowLine}${cards}</div>
     </div>`;
   }).join('');
 
   grid.innerHTML = `<div class="cal-gutter-wrap"><div class="cal-day-head" style="visibility:hidden">&nbsp;</div>${gutter}</div>${cols}`;
+}
+
+// ── Drag & drop: place / move tasks on the calendar ──
+let calDragId = null;
+function calDragStart(e, id){
+  calDragId = id;
+  if(e.dataTransfer){ e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setData('text/plain', id); }catch(err){} }
+}
+function calDragOver(e){
+  e.preventDefault();
+  if(e.dataTransfer) e.dataTransfer.dropEffect='move';
+}
+function calDrop(e, ds){
+  e.preventDefault();
+  const id = calDragId || (e.dataTransfer && e.dataTransfer.getData('text/plain'));
+  calDragId = null;
+  if(!id) return;
+  const arr = S.g('todos');
+  const t = arr.find(x=>x.id===id);
+  if(!t) return;
+  const dayBody = e.currentTarget;
+  const rect = dayBody.getBoundingClientRect();
+  const offsetY = e.clientY - rect.top;
+  const rowH = getCalRowH();
+  const rangeStart = CAL_HOUR_START*60, rangeEnd = CAL_HOUR_END*60;
+  let minutes = rangeStart + (offsetY/rowH)*60;
+  minutes = Math.round(minutes/15)*15;
+  minutes = Math.max(rangeStart, Math.min(minutes, rangeEnd-15));
+  t.time = minToTime(minutes);
+  t.due = ds;
+  if(!t.durMin) t.durMin = 30;
+  t.endTime = minToTime(minutes + t.durMin);
+  S.s('todos', arr);
+  renderTodos();
+  renderDashCalendar();
+}
+
+// ── Resize: drag the bottom handle to change a task's duration ──
+let calResizing = null;
+function calResizeStart(e, id){
+  e.preventDefault();
+  e.stopPropagation();
+  const cardEl = e.target.closest('.cal-card');
+  const arr = S.g('todos');
+  const t = arr.find(x=>x.id===id);
+  if(!t || !cardEl) return;
+  calResizing = { id, startY:e.clientY, startDur:t.durMin||30, rowH:getCalRowH(), cardEl, liveDur:t.durMin||30 };
+  document.addEventListener('mousemove', calResizeMove);
+  document.addEventListener('mouseup', calResizeEnd);
+}
+function calResizeMove(e){
+  if(!calResizing) return;
+  const deltaY = e.clientY - calResizing.startY;
+  const deltaMin = (deltaY/calResizing.rowH)*60;
+  let newDur = Math.round((calResizing.startDur+deltaMin)/15)*15;
+  newDur = Math.max(15, newDur);
+  calResizing.liveDur = newDur;
+  const newHeightPx = Math.max((newDur/60)*calResizing.rowH, 22);
+  calResizing.cardEl.style.height = newHeightPx+'px';
+}
+function calResizeEnd(){
+  if(!calResizing) return;
+  const { id, liveDur } = calResizing;
+  document.removeEventListener('mousemove', calResizeMove);
+  document.removeEventListener('mouseup', calResizeEnd);
+  const arr = S.g('todos');
+  const t = arr.find(x=>x.id===id);
+  if(t){
+    t.durMin = liveDur;
+    if(t.time) t.endTime = minToTime(timeToMin(t.time)+liveDur);
+    S.s('todos', arr);
+  }
+  calResizing = null;
+  renderTodos();
+  renderDashCalendar();
 }
 
 
