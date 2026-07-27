@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- ============================================================
-     MY SPACE — Build v1.2 (Fix: Grid view task cards)
+     MY SPACE — Build v1.3 (Removed pagination — full task list)
      Generated: 2026-07-27
      ============================================================ -->
 <html lang="en" data-theme="light">
@@ -1739,9 +1739,7 @@ function renderTodos(){
 
   const tdy=today();
   const totalCount=filtered.length;
-  const totalPages=Math.max(1,Math.ceil(totalCount/TASKS_PER_PAGE));
-  if(taskPage>totalPages) taskPage=totalPages;
-  const pageItems = taskView==='list' ? filtered.slice((taskPage-1)*TASKS_PER_PAGE, taskPage*TASKS_PER_PAGE) : filtered;
+  const pageItems = filtered;
 
   const renderSubtasksMini=(t)=>{
     if(!t.subtasks||!t.subtasks.length) return '';
@@ -1782,20 +1780,7 @@ function renderTodos(){
   }).join('');
 
   const pag=document.getElementById('t-pagination');
-  if(taskView==='list' && totalCount>0){
-    const start=(taskPage-1)*TASKS_PER_PAGE+1;
-    const end=Math.min(taskPage*TASKS_PER_PAGE,totalCount);
-    let pageBtns='';
-    for(let i=1;i<=totalPages;i++){
-      pageBtns+=`<button class="pg-num ${i===taskPage?'active':''}" onclick="taskPage=${i};renderTodos()">${i}</button>`;
-    }
-    pag.innerHTML=`<span class="pg-info">Showing ${start} to ${end} of ${totalCount} task${totalCount===1?'':'s'}</span>
-      <div class="pg-controls">
-        <button class="pg-arrow" onclick="taskPage=Math.max(1,taskPage-1);renderTodos()" ${taskPage===1?'disabled':''}>‹</button>
-        ${pageBtns}
-        <button class="pg-arrow" onclick="taskPage=Math.min(${totalPages},taskPage+1);renderTodos()" ${taskPage===totalPages?'disabled':''}>›</button>
-      </div>`;
-  } else if(pag) pag.innerHTML='';
+  if(pag) pag.innerHTML = totalCount>0 ? `<span class="pg-info">Showing all ${totalCount} task${totalCount===1?'':'s'}</span>` : '';
 }
 
 function toggleTaskMenu(id,ev){
