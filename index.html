@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- ============================================================
-     MY SPACE — Build v1.3 (Removed pagination — full task list)
+     MY SPACE — Build v1.4 (Compact task rows)
      Generated: 2026-07-27
      ============================================================ -->
 <html lang="en" data-theme="light">
@@ -571,14 +571,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .view-toggle-btn{width:28px;height:28px;border:none;background:transparent;border-radius:6px;color:var(--text3);cursor:pointer;font-size:13px;}
 .view-toggle-btn.active{background:var(--surface);color:var(--accent);box-shadow:var(--shadow-sm);}
 
-.task-row-card{position:relative;display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px 12px 18px;box-shadow:var(--shadow-sm);transition:var(--transition);overflow:visible;}
+.task-row-card{position:relative;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px 7px 16px;box-shadow:var(--shadow-sm);transition:var(--transition);overflow:visible;}
 .task-row-card:hover{box-shadow:var(--shadow);}
 .task-row-card.is-done{opacity:0.55;}
 .task-row-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--radius) 0 0 var(--radius);}
-.task-row-title{border:none;background:transparent;width:100%;padding:1px 3px;margin:-1px -3px;outline:none;font-family:var(--font);font-size:13.5px;font-weight:500;color:var(--text);}
+.task-row-title{border:none;background:transparent;width:100%;padding:1px 3px;margin:-1px -3px;outline:none;font-family:var(--font);font-size:13px;font-weight:500;color:var(--text);}
 .task-row-title:focus{background:var(--bg3);border-radius:4px;}
-.task-row-pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex-shrink:0;max-width:52%;justify-content:flex-end;}
-.tpill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap;}
+.task-row-pills{display:flex;gap:5px;flex-wrap:wrap;align-items:center;flex-shrink:0;max-width:52%;justify-content:flex-end;}
+.tpill{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:100px;font-size:10.5px;font-weight:600;white-space:nowrap;}
 .tpill-muted{background:var(--bg3);color:var(--text3);}
 .task-row-menu-wrap{position:relative;flex-shrink:0;}
 .task-menu{position:absolute;right:0;top:28px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow-lg);z-index:20;min-width:120px;overflow:hidden;}
@@ -1749,8 +1749,8 @@ function renderTodos(){
 
   list.className = taskView==='grid' ? 'task-grid' : 'task-list';
   list.style.cssText = taskView==='grid'
-    ? 'display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px'
-    : 'display:flex;flex-direction:column;gap:8px';
+    ? 'display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px'
+    : 'display:flex;flex-direction:column;gap:5px';
 
   list.innerHTML=pageItems.map(t=>{
     const barColor = TAB_BAR_T[t.tab]||TAB_BAR_T.office;
