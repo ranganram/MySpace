@@ -7,23 +7,24 @@
 <style>
 :root {
   --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
-  --accent: #2383e2;
-  --green: #0f7b6c; --red: #e03e3e; --orange: #d9730d;
+  --accent: #6C5CE7;
+  --accent-dark: #5b4bd4;
+  --green: #0f9e6e; --red: #e0455a; --orange: #e08a2b;
   --pink: #ad1a72; --teal: #0b6e99; --purple: #6940a5; --yellow: #dfab01;
-  --radius-xl: 6px; --radius-lg: 6px; --radius: 4px; --radius-sm: 4px; --radius-xs: 3px;
-  --sidebar-w: 220px;
+  --radius-xl: 16px; --radius-lg: 12px; --radius: 10px; --radius-sm: 8px; --radius-xs: 6px;
+  --sidebar-w: 232px;
   --transition: all 0.15s ease;
 }
 [data-theme="light"] {
-  --bg:#ffffff; --bg2:#ffffff; --bg3:#f1f1ef;
-  --surface:#ffffff; --surface2:rgba(255,255,255,0.97); --surfaceHov:#f7f7f5;
-  --border:rgba(55,53,47,0.09); --border2:rgba(55,53,47,0.06);
-  --text:#37352f; --text2:#37352f; --text3:#787774; --text4:#aeaaa4;
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.04);
-  --shadow:0 2px 8px rgba(0,0,0,0.06);
-  --shadow-lg:0 4px 16px rgba(0,0,0,0.08);
-  --accent-bg:rgba(35,131,226,0.08); --green-bg:rgba(15,123,108,0.08);
-  --red-bg:rgba(224,62,62,0.08); --orange-bg:rgba(217,115,13,0.08); --purple-bg:rgba(105,64,165,0.08);
+  --bg:#f7f7fb; --bg2:#ffffff; --bg3:#f0eefc;
+  --surface:#ffffff; --surface2:rgba(255,255,255,0.97); --surfaceHov:#faf9ff;
+  --border:rgba(76,60,140,0.10); --border2:rgba(76,60,140,0.07);
+  --text:#2b2740; --text2:#3a3552; --text3:#8a85a3; --text4:#b6b1cc;
+  --shadow-sm:0 1px 3px rgba(76,60,140,0.06);
+  --shadow:0 4px 14px rgba(76,60,140,0.08);
+  --shadow-lg:0 8px 28px rgba(76,60,140,0.12);
+  --accent-bg:rgba(108,92,231,0.10); --green-bg:rgba(15,158,110,0.10);
+  --red-bg:rgba(224,69,90,0.10); --orange-bg:rgba(224,138,43,0.10); --purple-bg:rgba(105,64,165,0.08);
   --lock-bg1:#0f0f0f; --lock-bg2:#1a1a1a; --lock-bg3:#0f1b2d;
 }
 [data-theme="dark"] {
@@ -68,20 +69,21 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .shell{display:flex;height:100vh;overflow:hidden;}
 
 /* ── SIDEBAR ── */
-.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--bg3);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:var(--transition);}
-.sidebar-header{padding:16px 14px 10px;}
-.sidebar-logo{font-size:14px;font-weight:600;letter-spacing:-0.2px;color:var(--text);}
-.sidebar-tagline{font-size:11px;color:var(--text3);margin-top:2px;}
-.nav-group{padding:4px 6px;flex:1;overflow-y:auto;}
-.nav-label{font-size:11px;font-weight:600;color:var(--text4);letter-spacing:0.3px;text-transform:uppercase;padding:10px 10px 4px;}
-.nav-item{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13.5px;font-weight:400;transition:var(--transition);user-select:none;}
-.nav-item:hover{background:rgba(55,53,47,0.08);color:var(--text);}
-.nav-item.active{background:rgba(55,53,47,0.08);color:var(--text);font-weight:500;}
+.sidebar{width:var(--sidebar-w);min-width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;transition:var(--transition);}
+.sidebar-header{padding:18px 16px 14px;}
+.sidebar-logo-row{display:flex;align-items:center;gap:10px;}
+.sidebar-logo-badge{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#8b7cf0);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;flex-shrink:0;box-shadow:0 3px 10px rgba(108,92,231,0.35);}
+.sidebar-logo{font-size:14.5px;font-weight:700;letter-spacing:-0.2px;color:var(--text);}
+.sidebar-tagline{font-size:11px;color:var(--text3);margin-top:1px;}
+.nav-group{padding:8px 12px;flex:1;overflow-y:auto;}
+.nav-label{font-size:10.5px;font-weight:700;color:var(--text4);letter-spacing:0.6px;text-transform:uppercase;padding:12px 10px 6px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;cursor:pointer;color:var(--text2);font-size:13.5px;font-weight:500;transition:var(--transition);user-select:none;margin-bottom:2px;}
+.nav-item:hover{background:var(--bg3);color:var(--text);}
+.nav-item.active{background:var(--accent);color:#fff;font-weight:600;box-shadow:0 4px 12px rgba(108,92,231,0.28);}
 .nav-icon-wrap{width:18px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--transition);color:var(--text3);}
 .nav-item:hover .nav-icon-wrap{color:var(--text);}
-.nav-item.active .nav-icon-wrap{color:var(--accent);}
-.nav-item.active .nav-icon-wrap{transform:scale(1.05);}
-.sidebar-footer{padding:10px 12px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
+.nav-item.active .nav-icon-wrap{color:#fff;transform:scale(1.05);}
+.sidebar-footer{padding:12px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
 .theme-toggle{display:flex;align-items:center;background:var(--bg3);border-radius:100px;padding:4px;cursor:pointer;border:none;}
 .theme-option{width:28px;height:28px;border-radius:100px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:var(--transition);cursor:pointer;border:none;background:transparent;color:var(--text3);}
 .theme-option.active{background:var(--surface);box-shadow:var(--shadow-sm);color:var(--text);}
@@ -530,10 +532,69 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .target-btn.set:hover{background:var(--purple);color:#fff;}
 .target-btn.unset{background:var(--bg3);color:var(--text3);}
 .target-btn.unset:hover{background:var(--red-bg);color:var(--red);}
+
+/* ── TASKS PAGE REDESIGN ── */
+.task-search-wrap{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 14px;min-width:220px;color:var(--text3);box-shadow:var(--shadow-sm);}
+.task-search-wrap input{border:none;background:transparent;padding:0;font-size:13px;width:100%;outline:none;}
+.today-focus-card{background:linear-gradient(135deg,rgba(108,92,231,0.08),rgba(139,124,240,0.05));border:1px solid rgba(108,92,231,0.18);border-radius:var(--radius-lg);padding:14px 18px;}
+.today-focus-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;}
+.today-focus-label{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:0.6px;}
+
+.quick-add-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;}
+.quick-add-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;}
+.quick-add-plus{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;}
+.quick-add-title{font-size:14px;font-weight:700;color:var(--text);}
+.quick-add-clear{font-size:12px;color:var(--text3);cursor:pointer;}
+.quick-add-clear:hover{color:var(--red);}
+.quick-add-chevron{font-size:12px;color:var(--text3);transition:transform 0.2s;}
+.quick-add-input{width:100%;border:1px solid var(--border);background:var(--bg3);border-radius:10px;padding:12px 14px;font-size:14px;font-weight:500;color:var(--text);outline:none;margin-bottom:12px;}
+.quick-add-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg);}
+.quick-add-pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.qa-pill{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:7px 12px;font-size:12.5px;color:var(--text3);}
+.qa-pill-ico{font-size:12px;}
+.qa-pill-lbl{color:var(--text3);white-space:nowrap;}
+.qa-pill input{border:none;background:transparent;padding:0;font-size:12.5px;color:var(--text);outline:none;width:100px;}
+.qa-pill input[type=number]{width:44px;}
+.qa-pill-suffix{color:var(--text4);}
+.qa-pill-pri select{border:none;background:transparent;padding:0;font-size:12.5px;font-weight:600;color:var(--text);outline:none;cursor:pointer;}
+.quick-add-notes{width:100%;border:1px solid var(--border);background:var(--bg3);border-radius:9px;padding:10px 12px;font-size:13px;color:var(--text);outline:none;resize:none;min-height:44px;font-family:var(--font);margin-bottom:4px;}
+.quick-add-submit{border-radius:9px;padding:9px 22px;font-weight:600;box-shadow:0 4px 12px rgba(108,92,231,0.3);}
+
+.your-tasks-title{font-size:17px;font-weight:700;color:var(--text);letter-spacing:-0.2px;}
+.sort-by-wrap{display:flex;align-items:center;gap:6px;font-size:12.5px;}
+.sort-by-wrap select{width:auto;border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:500;}
+.view-toggle-wrap{display:flex;gap:2px;background:var(--bg3);border-radius:8px;padding:3px;}
+.view-toggle-btn{width:28px;height:28px;border:none;background:transparent;border-radius:6px;color:var(--text3);cursor:pointer;font-size:13px;}
+.view-toggle-btn.active{background:var(--surface);color:var(--accent);box-shadow:var(--shadow-sm);}
+
+.task-row-card{position:relative;display:flex;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px 12px 18px;box-shadow:var(--shadow-sm);transition:var(--transition);overflow:visible;}
+.task-row-card:hover{box-shadow:var(--shadow);}
+.task-row-card.is-done{opacity:0.55;}
+.task-row-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--radius) 0 0 var(--radius);}
+.task-row-title{border:none;background:transparent;width:100%;padding:1px 3px;margin:-1px -3px;outline:none;font-family:var(--font);font-size:13.5px;font-weight:500;color:var(--text);}
+.task-row-title:focus{background:var(--bg3);border-radius:4px;}
+.task-row-pills{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex-shrink:0;max-width:52%;justify-content:flex-end;}
+.tpill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap;}
+.tpill-muted{background:var(--bg3);color:var(--text3);}
+.task-row-menu-wrap{position:relative;flex-shrink:0;}
+.task-menu{position:absolute;right:0;top:28px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow-lg);z-index:20;min-width:120px;overflow:hidden;}
+.task-menu button{display:block;width:100%;text-align:left;padding:9px 14px;font-size:12.5px;background:transparent;border:none;color:var(--text2);cursor:pointer;font-family:var(--font);}
+.task-menu button:hover{background:var(--bg3);}
+.task-menu button.danger{color:var(--red);}
+
+.task-pagination{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:16px;padding:6px 2px;}
+.pg-info{font-size:12.5px;color:var(--text3);}
+.pg-controls{display:flex;align-items:center;gap:4px;}
+.pg-arrow,.pg-num{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:12.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.pg-num.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;}
+.pg-arrow:disabled{opacity:0.4;cursor:default;}
+@media(max-width:680px){
+  .task-row-pills{max-width:100%;justify-content:flex-start;margin-top:6px;}
+  .task-row-card{flex-wrap:wrap;}
+}
 </style>
 </head>
 <body>
-
 <!-- LOCK -->
 <div id="lock-screen">
   <div class="lock-wrap">
@@ -571,8 +632,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <div class="shell">
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo">My Space</div>
-      <div class="sidebar-tagline">Your personal OS · <span style="color:var(--text4)">v2.5</span></div>
+      <div class="sidebar-logo-row">
+        <div class="sidebar-logo-badge">A</div>
+        <div>
+          <div class="sidebar-logo">My Space</div>
+          <div class="sidebar-tagline">Your personal OS · v2.5</div>
+        </div>
+      </div>
     </div>
     <div class="nav-group">
       <div class="nav-label">Workspace</div>
@@ -647,7 +713,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="main">
   <div class="main-inner">
 
-    <!-- JOURNAL -->
+    <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
         <div>
@@ -737,22 +803,39 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
     <!-- TASKS -->
     <div class="page" id="page-todo">
-      <div class="page-title">Tasks</div>
-      <div class="page-sub">Plan smart — focus on what matters today</div>
-      <div style="background:var(--accent-bg);border:1px solid rgba(35,131,226,0.15);border-radius:8px;padding:10px 14px;margin-bottom:14px;">
-        <div style="font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:7px">Today's Focus</div>
-        <div id="today-list"><div style="font-size:12.5px;color:var(--text4)">Star ☆ any task to pull it onto your dashboard for today</div></div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
-        <div style="display:flex;gap:2px;background:var(--bg3);border-radius:8px;padding:3px;" id="todo-seg">
-          <button class="seg-btn active" onclick="switchTodoTab('office',this)" style="border-radius:6px;padding:5px 16px">🏢 Office</button>
-          <button class="seg-btn" onclick="switchTodoTab('personal',this)" style="border-radius:6px;padding:5px 16px">🏠 Personal</button>
-          <button class="seg-btn" onclick="switchTodoTab('recurring',this)" style="border-radius:6px;padding:5px 16px">↻ Recurring</button>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+        <div>
+          <div class="page-title" style="margin-bottom:0">Tasks</div>
+          <div class="page-sub" style="margin-bottom:0">Plan smart — focus on what matters today</div>
         </div>
-        <div style="display:flex;gap:2px;background:var(--bg3);border-radius:8px;padding:3px;" id="todo-filter-seg">
-          <button class="seg-btn active" onclick="switchTodoFilter('all',this)" style="border-radius:6px;padding:5px 14px">All</button>
-          <button class="seg-btn" onclick="switchTodoFilter('unplanned',this)" style="border-radius:6px;padding:5px 14px">Unplanned</button>
-          <button class="seg-btn" onclick="switchTodoFilter('planned',this)" style="border-radius:6px;padding:5px 14px">Planned</button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="task-search-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="t-search" placeholder="Search tasks..." oninput="renderTodos()">
+          </div>
+        </div>
+      </div>
+
+      <div class="today-focus-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="today-focus-dot"></span>
+            <span class="today-focus-label">TODAY'S FOCUS</span>
+          </div>
+        </div>
+        <div id="today-list" style="margin-top:8px"><div style="font-size:12.5px;color:var(--text3)">Star ☆ any task to pull it onto your dashboard for today</div></div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:16px 0;">
+        <div style="display:flex;gap:2px;background:var(--bg3);border-radius:10px;padding:3px;" id="todo-filter-seg">
+          <button class="seg-btn active" onclick="switchTodoFilter('all',this)" style="border-radius:8px;padding:5px 14px">All</button>
+          <button class="seg-btn" onclick="switchTodoFilter('unplanned',this)" style="border-radius:8px;padding:5px 14px">Unplanned</button>
+          <button class="seg-btn" onclick="switchTodoFilter('planned',this)" style="border-radius:8px;padding:5px 14px">Planned</button>
+        </div>
+        <div style="display:flex;gap:2px;background:var(--bg3);border-radius:10px;padding:3px;" id="todo-seg">
+          <button class="seg-btn active" onclick="switchTodoTab('office',this)" style="border-radius:8px;padding:5px 16px">🏢 Office</button>
+          <button class="seg-btn" onclick="switchTodoTab('personal',this)" style="border-radius:8px;padding:5px 16px">🏠 Personal</button>
+          <button class="seg-btn" onclick="switchTodoTab('recurring',this)" style="border-radius:8px;padding:5px 16px">↻ Recurring</button>
         </div>
       </div>
 
@@ -789,47 +872,82 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
       </div>
 
-      <div id="t-form-card" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.07);margin-bottom:16px;overflow:hidden;">
-        <div style="padding:14px 16px 10px">
-          <input type="text" id="t-text" placeholder="Add a task..." style="font-size:14px;font-weight:500;border:none;width:100%;outline:none;background:transparent;color:var(--text);padding:0;" />
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center">
-            <select id="t-pri" style="border:1px solid var(--border);background:var(--bg3);border-radius:6px;font-size:12px;font-weight:500;color:var(--text);padding:3px 8px;cursor:pointer;outline:none;">
-              <option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option>
-            </select>
-            <div style="display:flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--bg3);border-radius:6px;padding:3px 8px">
-              <span style="font-size:11px;color:var(--text4)">Due</span>
-              <input type="date" id="t-date" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:120px">
-            </div>
-            <div style="display:flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--bg3);border-radius:6px;padding:3px 8px">
-              <span style="font-size:11px;color:var(--text4)">⏰</span>
-              <input type="time" id="t-time" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:80px">
-            </div>
-            <div style="display:flex;align-items:center;gap:4px;border:1px solid var(--border);background:var(--bg3);border-radius:6px;padding:3px 8px" title="How many hours this task takes">
-              <span style="font-size:11px;color:var(--text4)">⏱</span>
-              <input type="number" id="t-dur" placeholder="Hrs" min="0.25" step="0.25" style="border:none;background:transparent;font-size:12px;color:var(--text);padding:0;outline:none;width:52px">
-              <span style="font-size:11px;color:var(--text4)">hrs</span>
-            </div>
-            <input type="hidden" id="t-end-time">
+      <!-- QUICK ADD TASK -->
+      <div id="t-form-card" class="quick-add-card">
+        <div class="quick-add-header" onclick="toggleQuickAdd()">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="quick-add-plus">+</span>
+            <span class="quick-add-title">Quick Add Task</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="quick-add-clear" onclick="event.stopPropagation();clearQuickAddForm()">Clear</span>
+            <span class="quick-add-chevron" id="qa-chevron">▾</span>
           </div>
         </div>
-        <div style="border-top:1px solid var(--border2);padding:8px 16px">
-          <textarea id="t-notes" placeholder="Notes (optional)..." style="width:100%;border:none;background:transparent;font-size:12.5px;color:var(--text);outline:none;resize:none;min-height:32px;font-family:var(--font);line-height:1.5;padding:0;"></textarea>
-        </div>
-          <div class="field">
-            <label>Subtasks</label>
-            <div id="t-subtasks-list" style="margin-bottom:6px"></div>
-            <div style="display:flex;gap:6px">
-              <input type="text" id="t-subtask-input" placeholder="Add a subtask..." style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addSubtaskField();}">
-              <button class="btn btn-ghost btn-sm" onclick="addSubtaskField()" type="button">+ Add</button>
+        <div id="qa-body">
+          <div style="padding:4px 18px 14px">
+            <input type="text" id="t-text" placeholder="What needs to be done?" class="quick-add-input">
+            <div class="quick-add-pill-row">
+              <div class="qa-pill">
+                <span class="qa-pill-ico">📅</span>
+                <span class="qa-pill-lbl">Due date</span>
+                <input type="date" id="t-date">
+              </div>
+              <div class="qa-pill">
+                <span class="qa-pill-ico">🕐</span>
+                <span class="qa-pill-lbl">Time</span>
+                <input type="time" id="t-time">
+              </div>
+              <div class="qa-pill">
+                <span class="qa-pill-ico">⏱</span>
+                <span class="qa-pill-lbl">Estimate</span>
+                <input type="number" id="t-dur" placeholder="Hrs" min="0.25" step="0.25">
+                <span class="qa-pill-suffix">hrs</span>
+              </div>
+              <div class="qa-pill qa-pill-pri">
+                <select id="t-pri">
+                  <option value="high">🔴 High</option><option value="medium" selected>🟡 Medium</option><option value="low">🟢 Low</option>
+                </select>
+              </div>
+              <input type="hidden" id="t-end-time">
+            </div>
+            <textarea id="t-notes" placeholder="Add notes (optional)..." class="quick-add-notes"></textarea>
+            <div class="field" style="margin-top:8px">
+              <div id="t-subtasks-list" style="margin-bottom:6px"></div>
+              <div style="display:flex;gap:6px">
+                <input type="text" id="t-subtask-input" placeholder="Add a subtask..." style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addSubtaskField();}">
+                <button class="btn btn-ghost btn-sm" onclick="addSubtaskField()" type="button">+ Add Subtasks</button>
+              </div>
+            </div>
+            <div class="btn-row" style="justify-content:flex-end">
+              <button class="btn btn-ghost" id="t-cancel-btn" style="display:none" onclick="cancelTEdit()">Cancel</button>
+              <button class="btn btn-primary quick-add-submit" onclick="addTodo()" id="t-add-btn">+ Add Task</button>
             </div>
           </div>
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="addTodo()" id="t-add-btn" style="border-radius:7px;padding:8px 20px">Add Task</button>
-            <button class="btn btn-ghost" id="t-cancel-btn" style="display:none;border-radius:7px" onclick="cancelTEdit()">Cancel</button>
-          </div>
+        </div>
       </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:18px 0 10px">
+        <div class="your-tasks-title">Your Tasks</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="sort-by-wrap">
+            <span style="color:var(--text3)">Sort by:</span>
+            <select id="t-sort" onchange="renderTodos()">
+              <option value="due">Due date</option>
+              <option value="pri">Priority</option>
+              <option value="created">Recently added</option>
+            </select>
+          </div>
+          <div class="view-toggle-wrap">
+            <button class="view-toggle-btn active" id="tv-list" onclick="switchTaskView('list')" title="List view">☰</button>
+            <button class="view-toggle-btn" id="tv-grid" onclick="switchTaskView('grid')" title="Grid view">▦</button>
+          </div>
+        </div>
+      </div>
+
       <!-- One-off task list -->
       <div id="t-list-card" style="margin-top:4px"><div id="t-list"></div></div>
+      <div id="t-pagination" class="task-pagination"></div>
       <!-- Recurring task list -->
       <div id="rt-list-wrap" style="display:none">
         <div class="card"><div id="rt-list"></div></div>
@@ -1205,7 +1323,6 @@ function lockApp(){
 // NAV
 // ══════════════════════════════════════════
 function navTo(p){
-  // Find matching nav item and activate it
   const items = document.querySelectorAll('.nav-item');
   let found = null;
   items.forEach(item => {
@@ -1228,7 +1345,6 @@ function nav(p,el){
   if(p==='watch'){ renderWatchList(); }
 }
 async function initApp(){
-  // Show loading overlay
   const app = document.getElementById('app');
   const loader = document.createElement('div');
   loader.id = 'db-loader';
@@ -1236,24 +1352,19 @@ async function initApp(){
   loader.innerHTML = '<div style="font-size:36px">⚡</div><div style="font-size:17px;font-weight:700;color:var(--text)">Loading your data...</div><div style="font-size:13px;color:var(--text3)">Connecting to Supabase</div>';
   app.appendChild(loader);
 
-  // Load from Supabase
   await dbLoad();
 
-  // Also copy Supabase data into localStorage as offline fallback
   if(DB_READY){
     Object.entries(CACHE).forEach(([k,v]) => localStorage.setItem('ms4_'+k, JSON.stringify(v)));
   }
 
-  // Remove loader
   loader.remove();
 
-  // Set defaults
   document.getElementById('j-date').value=today();
   const dt=new Date(); dt.setHours(dt.getHours()+1);
   document.getElementById('r-datetime').value=dt.toISOString().slice(0,16);
   document.getElementById('le-date').value=today();
 
-  // Render everything
   renderDashboard();
   renderJournal(); renderHabits(); renderTodos(); renderReminders(); renderNotes(); renderPlanner(); renderMisc();
   renderRecurringTasks();
@@ -1367,24 +1478,47 @@ function renderHabits(){
 // TASKS
 // ══════════════════════════════════════════
 let todoTab='office';
+let taskView='list';
+let taskPage=1;
+const TASKS_PER_PAGE=5;
+
+function toggleQuickAdd(){
+  const body=document.getElementById('qa-body');
+  const chev=document.getElementById('qa-chevron');
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  chev.textContent=open?'▸':'▾';
+}
+function clearQuickAddForm(){
+  cancelTEdit();
+}
+function switchTaskView(v){
+  taskView=v;
+  document.getElementById('tv-list').classList.toggle('active',v==='list');
+  document.getElementById('tv-grid').classList.toggle('active',v==='grid');
+  renderTodos();
+}
+
 function switchTodoTab(t,el){
   todoTab=t;
+  taskPage=1;
   document.querySelectorAll('#todo-seg .seg-btn').forEach(b=>b.classList.remove('active'));
   if(el)el.classList.add('active');
   const isRecur = t==='recurring';
-  // Toggle visibility of forms and lists
   const recurForm = document.getElementById('recur-form-card');
   const regularForm = document.getElementById('t-form-card');
   const tListCard = document.getElementById('t-list-card');
   const rtListWrap = document.getElementById('rt-list-wrap');
   const filterSeg = document.getElementById('todo-filter-seg');
-  const todayFocus = document.querySelector('.today-focus');
+  const todayFocus = document.querySelector('.today-focus-card');
+  const pag = document.getElementById('t-pagination');
   if(recurForm) recurForm.style.display = isRecur ? 'block' : 'none';
   if(regularForm) regularForm.style.display = isRecur ? 'none' : 'block';
   if(tListCard) tListCard.style.display = isRecur ? 'none' : 'block';
   if(rtListWrap) rtListWrap.style.display = isRecur ? 'block' : 'none';
   if(filterSeg) filterSeg.style.display = isRecur ? 'none' : 'inline-flex';
   if(todayFocus) todayFocus.style.display = isRecur ? 'none' : 'block';
+  if(pag) pag.style.display = isRecur ? 'none' : 'flex';
   if(isRecur) renderRecurringTasks();
   else renderTodos();
 }
@@ -1409,7 +1543,7 @@ function addTodo(){
     if(cancelBtn) cancelBtn.style.display='none';
   } else {
     const endTime = (ttime && durMin) ? minToTime(timeToMin(ttime)+durMin) : '';
-    arr.push({id:uid(),tab:todoTab,text,notes:document.getElementById('t-notes').value.trim(),pri:document.getElementById('t-pri').value,due,time:ttime,durMin,endTime,subtasks:collectSubtasks(),done:false,today:false,created:today()});
+    arr.push({id:uid(),tab:todoTab==='recurring'?'office':todoTab,text,notes:document.getElementById('t-notes').value.trim(),pri:document.getElementById('t-pri').value,due,time:ttime,durMin,endTime,subtasks:collectSubtasks(),done:false,today:false,created:today()});
   }
   S.s('todos',arr);
   ['t-text','t-notes','t-date','t-time','t-dur'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
@@ -1444,6 +1578,7 @@ let tEditId=null;
 let todoFilter='all';
 function switchTodoFilter(f,el){
   todoFilter=f;
+  taskPage=1;
   document.querySelectorAll('#todo-filter-seg .seg-btn').forEach(b=>b.classList.remove('active'));
   if(el)el.classList.add('active');
   renderTodos();
@@ -1502,12 +1637,12 @@ function editTodo(id){
   if(document.getElementById('t-dur')) document.getElementById('t-dur').value=t.durMin?(Math.round((t.durMin/60)*100)/100):'';
   if(document.getElementById('t-end-time')) document.getElementById('t-end-time').value=t.endTime||'';
   loadSubtasksIntoForm(t.subtasks||[]);
-  // Switch to correct tab
-  if(t.tab!==todoTab) switchTodoTab(t.tab, document.querySelector(`#todo-seg .seg-btn:${t.tab==='office'?'first':'last'}-child`));
+  if(t.tab!==todoTab && t.tab) switchTodoTab(t.tab, document.querySelector(`#todo-seg .seg-btn:${t.tab==='office'?'first':'last'}-child`));
   tEditId=id;
-  // Show cancel button
   let cancelBtn=document.getElementById('t-cancel-btn');
   if(cancelBtn) cancelBtn.style.display='inline-flex';
+  const qaBody=document.getElementById('qa-body');
+  if(qaBody) qaBody.style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function cancelTEdit(){
@@ -1518,86 +1653,140 @@ function cancelTEdit(){
   if(cancelBtn) cancelBtn.style.display='none';
 }
 const PRIM={high:{lbl:'High',cls:'badge-red'},medium:{lbl:'Medium',cls:'badge-orange'},low:{lbl:'Low',cls:'badge-green'}};
+const PRI_DOT_T = {high:'#e0455a',medium:'#e08a2b',low:'#1fa672'};
+const PRI_PILL_T = {
+  high:{bg:'rgba(224,69,90,0.12)',c:'#e0455a',lbl:'High'},
+  medium:{bg:'rgba(224,138,43,0.12)',c:'#e08a2b',lbl:'Medium'},
+  low:{bg:'rgba(31,166,114,0.12)',c:'#1fa672',lbl:'Low'}
+};
+const TAB_BAR_T = {office:'#6f5fd6',personal:'#0f9e91'};
+
+function fmtDueBadge(t,tdy){
+  if(!t.due) return '';
+  const overdue=!t.done&&t.due<tdy, isToday=t.due===tdy;
+  const bg = overdue?'rgba(224,62,62,0.12)':isToday?'rgba(217,115,13,0.12)':'var(--bg3)';
+  const c = overdue?'var(--red)':isToday?'var(--orange)':'var(--text3)';
+  const [y,m,dy]=t.due.split('-'); const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const lbl = isToday?'Today':`${dy} ${mn[+m-1]} ${y}`;
+  return `<span class="tpill" style="background:${bg};color:${c}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${lbl}</span>`;
+}
+function fmtTimeBadge(t){
+  if(!t.time) return `<span class="tpill tpill-muted"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>--:--</span>`;
+  const [h,m]=t.time.split(':'); const hr=+h; const ap=hr>=12?'PM':'AM'; const hh=hr%12||12;
+  return `<span class="tpill tpill-muted"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>${hh}:${m} ${ap}</span>`;
+}
+function fmtEstBadge(t){
+  if(!t.durMin) return `<span class="tpill tpill-muted"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>--</span>`;
+  const h=Math.round((t.durMin/60)*100)/100;
+  return `<span class="tpill tpill-muted"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>${h} hr${h===1?'':'s'}</span>`;
+}
+function fmtPriBadge(t){
+  const p=PRI_PILL_T[t.pri]||PRI_PILL_T.medium;
+  return `<span class="tpill" style="background:${p.bg};color:${p.c}">${p.lbl}</span>`;
+}
+
 function renderTodos(){
   const arr=S.g('todos');
   const tdArr=arr.filter(t=>t.today&&!t.done);
-  document.getElementById('today-list').innerHTML=tdArr.length?tdArr.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(35,131,226,0.1)"><div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="flex-shrink:0;width:14px;height:14px">${t.done?'✓':''}</div><span style="font-size:13px;font-weight:500;flex:1;color:var(--text)">${esc(t.text)}</span><span style="font-size:10px;color:var(--accent);opacity:0.6">${t.tab}</span><button class="star-btn on" onclick="toggleToday('${t.id}')" style="font-size:13px;color:var(--orange)">★</button></div>`).join(''):`<div style="font-size:12.5px;color:var(--text4)">Star ☆ any task to pull it onto your dashboard for today</div>`;
+  const todayListEl=document.getElementById('today-list');
+  if(todayListEl){
+    todayListEl.innerHTML=tdArr.length?tdArr.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border2)"><div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="flex-shrink:0;width:14px;height:14px">${t.done?'✓':''}</div><span style="font-size:13px;font-weight:500;flex:1;color:var(--text)">${esc(t.text)}</span><span style="font-size:10px;color:var(--accent);opacity:0.7">${t.tab}</span><button class="star-btn on" onclick="toggleToday('${t.id}')" style="font-size:13px;color:var(--orange)">★</button></div>`).join(''):`<div style="font-size:12.5px;color:var(--text3)">Star ☆ any task to pull it onto your dashboard for today</div>`;
+  }
   const list=document.getElementById('t-list');
+  const search=(document.getElementById('t-search')?.value||'').toLowerCase();
   let filtered=arr.filter(t=>t.tab===todoTab);
-  // Apply filter
   if(todoFilter==='unplanned') filtered=filtered.filter(t=>!t.due&&!t.time&&!t.done);
   else if(todoFilter==='planned') filtered=filtered.filter(t=>(t.due||t.time)&&!t.done);
+  if(search) filtered=filtered.filter(t=>t.text.toLowerCase().includes(search)||(t.notes||'').toLowerCase().includes(search));
+
   if(!filtered.length){
     const emptyMsg={all:'No tasks yet','unplanned':'No unplanned tasks — everything has a date or time!',planned:'No planned tasks — add dates or times to tasks'};
-    list.className='';
     list.style.cssText='';
-    list.innerHTML=`<div class="empty" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:40px 24px"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">${todoFilter==='unplanned'?'All planned!':todoFilter==='planned'?'Nothing planned yet':'All clear!'}</div><div class="empty-sub">${emptyMsg[todoFilter]||''}</div></div>`;return;
+    list.innerHTML=`<div class="empty" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:40px 24px"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">${todoFilter==='unplanned'?'All planned!':todoFilter==='planned'?'Nothing planned yet':'All clear!'}</div><div class="empty-sub">${emptyMsg[todoFilter]||''}</div></div>`;
+    document.getElementById('t-pagination').innerHTML='';
+    return;
   }
+
+  const sortMode=document.getElementById('t-sort')?.value||'due';
   const ord={high:0,medium:1,low:2};
-  filtered.sort((a,b)=>{ if(a.done!==b.done) return a.done?1:-1; if(ord[a.pri]!==ord[b.pri]) return ord[a.pri]-ord[b.pri]; return (a.due||'9999').localeCompare(b.due||'9999'); });
+  filtered.sort((a,b)=>{
+    if(a.done!==b.done) return a.done?1:-1;
+    if(sortMode==='pri') return ord[a.pri]-ord[b.pri];
+    if(sortMode==='created') return (b.created||'').localeCompare(a.created||'');
+    return (a.due||'9999').localeCompare(b.due||'9999');
+  });
+
   const tdy=today();
-  const dueBadge=t=>{
-    if(!t.due) return '';
-    const overdue=!t.done&&t.due<tdy,isToday=t.due===tdy;
-    const cls=overdue?'badge-red':isToday?'badge-orange':'badge-muted';
-    const lbl=overdue?`Overdue · ${fmtD(t.due)}`:isToday?'Due today':`Due ${fmtD(t.due)}`;
-    return `<span class="badge ${cls}">${lbl}</span>`;
-  };
-  const renderSubtasks=(t)=>{
+  const totalCount=filtered.length;
+  const totalPages=Math.max(1,Math.ceil(totalCount/TASKS_PER_PAGE));
+  if(taskPage>totalPages) taskPage=totalPages;
+  const pageItems = taskView==='list' ? filtered.slice((taskPage-1)*TASKS_PER_PAGE, taskPage*TASKS_PER_PAGE) : filtered;
+
+  const renderSubtasksMini=(t)=>{
     if(!t.subtasks||!t.subtasks.length) return '';
-    const done=t.subtasks.filter(s=>s.done).length;
-    const total=t.subtasks.length;
-    const pct=Math.round(done/total*100);
-    return `<div style="margin-top:6px;padding:6px 0 2px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-        <div class="subtask-progress" style="flex:1"><div class="subtask-progress-fill" style="width:${pct}%"></div></div>
-        <span style="font-size:10px;color:var(--text4)">${done}/${total}</span>
-      </div>
-      ${t.subtasks.map(s=>`<div class="subtask-item">
-        <div class="subtask-check ${s.done?'done':''}" onclick="toggleSubtask('${t.id}','${s.id}')">${s.done?'✓':''}</div>
-        <span class="subtask-text ${s.done?'done':''}">${esc(s.text)}</span>
-      </div>`).join('')}
-    </div>`;
+    const done=t.subtasks.filter(s=>s.done).length, total=t.subtasks.length;
+    return `<span class="tpill tpill-muted">✓ ${done}/${total}</span>`;
   };
-  const useWide = filtered.length > 5 && window.innerWidth > 1200;
-  list.className = useWide ? 'task-two-col' : '';
-  const PRI_DOT = {high:'var(--red)',medium:'var(--orange)',low:'var(--green)'};
-  list.className = '';
-  list.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;padding:2px';
-  list.innerHTML=filtered.map(t=>{
-    const priDot = PRI_DOT[t.pri]||'var(--text4)';
-    const isDueOverdue = t.due && t.due < tdy;
-    const isDueToday2 = t.due === tdy;
-    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px 10px 14px;transition:box-shadow 0.15s;position:relative;overflow:hidden;${t.done?'opacity:0.5':''}" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='none'">
-      <div style="position:absolute;top:0;left:0;width:3px;bottom:0;background:${priDot};opacity:0.7;border-radius:8px 0 0 8px"></div>
-      <div style="display:flex;align-items:flex-start;gap:8px">
-        <div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="margin-top:2px;flex-shrink:0">${t.done?'✓':''}</div>
-        <div style="flex:1;min-width:0">
-          <input type="text" class="inline-edit-text" value="${esc(t.text)}" style="font-size:13px;font-weight:500;color:var(--text);line-height:1.35;border:none;background:transparent;width:100%;padding:1px 3px;margin:-1px -3px;outline:none;font-family:var(--font);${t.done?'text-decoration:line-through':''}" onblur="saveInlineTodo('${t.id}','text',this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
-          ${t.notes?`<div style="font-size:11.5px;color:var(--text3);margin-top:2px">${esc(t.notes)}</div>`:''}
-          <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;align-items:center">
-            ${isDueOverdue?`<span style="font-size:10.5px;font-weight:600;color:var(--red);background:var(--red-bg);padding:1px 6px;border-radius:3px">⚠ ${fmtD(t.due)}</span>`:isDueToday2?`<span style="font-size:10.5px;font-weight:600;color:var(--orange);background:var(--orange-bg);padding:1px 6px;border-radius:3px">Due today</span>`:t.due?`<span style="font-size:10.5px;color:var(--text4);background:var(--bg3);padding:1px 6px;border-radius:3px">${fmtD(t.due)}</span>`:''}
-            <span style="display:inline-flex;align-items:center;gap:3px;background:var(--bg3);border-radius:3px;padding:1px 5px" title="Start time">
-              <span style="font-size:10px">⏰</span>
-              <input type="time" value="${t.time||''}" onchange="saveInlineTodo('${t.id}','time',this.value)" style="border:none;background:transparent;font-size:10.5px;color:var(--text3);padding:0;outline:none;width:62px;font-family:var(--font)">
-            </span>
-            <span style="display:inline-flex;align-items:center;gap:3px;background:var(--bg3);border-radius:3px;padding:1px 5px" title="Duration, in hours">
-              <span style="font-size:10px">⏱</span>
-              <input type="number" min="0.25" step="0.25" value="${t.durMin?(Math.round((t.durMin/60)*100)/100):''}" placeholder="hrs" onchange="saveInlineTodo('${t.id}','dur',this.value)" style="border:none;background:transparent;font-size:10.5px;color:var(--text3);padding:0;outline:none;width:36px;font-family:var(--font)">
-            </span>
-            ${t.time&&t.endTime?`<span style="font-size:10px;color:var(--text4)">→ ${t.endTime}</span>`:''}
-          </div>
-          ${renderSubtasks(t)}
-        </div>
-        <div style="display:flex;gap:2px;align-items:center;flex-shrink:0;margin-top:1px">
-          <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')" title="${t.today?'Remove from today':'Add to today'}" style="font-size:13px;width:20px;height:20px">${t.today?'★':'☆'}</button>
-          <button class="icon-btn edit" onclick="editTodo('${t.id}')" style="width:20px;height:20px;font-size:11px;opacity:0" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">✎</button>
-          <button class="icon-btn" onclick="deleteTodo('${t.id}')" style="width:20px;height:20px;font-size:11px;opacity:0" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">✕</button>
+
+  list.style.cssText = taskView==='grid'
+    ? 'display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px'
+    : 'display:flex;flex-direction:column;gap:8px';
+
+  list.innerHTML=pageItems.map(t=>{
+    const barColor = TAB_BAR_T[t.tab]||TAB_BAR_T.office;
+    return `<div class="task-row-card ${t.done?'is-done':''}">
+      <div class="task-row-bar" style="background:${barColor}"></div>
+      <div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="flex-shrink:0">${t.done?'✓':''}</div>
+      <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')" title="${t.today?'Remove from today':'Add to today'}">${t.today?'★':'☆'}</button>
+      <div style="flex:1;min-width:0">
+        <input type="text" class="inline-edit-text task-row-title" value="${esc(t.text)}" style="${t.done?'text-decoration:line-through;color:var(--text3)':''}" onblur="saveInlineTodo('${t.id}','text',this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
+        ${t.notes?`<div style="font-size:11.5px;color:var(--text3);margin-top:2px">${esc(t.notes)}</div>`:''}
+        ${renderSubtasksMini(t)? `<div style="margin-top:4px">${renderSubtasksMini(t)}</div>` : ''}
+      </div>
+      <div class="task-row-pills">
+        ${fmtDueBadge(t,tdy)}
+        ${fmtTimeBadge(t)}
+        ${fmtEstBadge(t)}
+        ${fmtPriBadge(t)}
+      </div>
+      <div class="task-row-menu-wrap">
+        <button class="icon-btn" onclick="toggleTaskMenu('${t.id}',event)" title="More">⋯</button>
+        <div class="task-menu" id="tm-${t.id}" style="display:none">
+          <button onclick="editTodo('${t.id}');closeAllTaskMenus()">✎ Edit</button>
+          <button onclick="deleteTodo('${t.id}')" class="danger">✕ Delete</button>
         </div>
       </div>
     </div>`;
   }).join('');
+
+  const pag=document.getElementById('t-pagination');
+  if(taskView==='list' && totalCount>0){
+    const start=(taskPage-1)*TASKS_PER_PAGE+1;
+    const end=Math.min(taskPage*TASKS_PER_PAGE,totalCount);
+    let pageBtns='';
+    for(let i=1;i<=totalPages;i++){
+      pageBtns+=`<button class="pg-num ${i===taskPage?'active':''}" onclick="taskPage=${i};renderTodos()">${i}</button>`;
+    }
+    pag.innerHTML=`<span class="pg-info">Showing ${start} to ${end} of ${totalCount} task${totalCount===1?'':'s'}</span>
+      <div class="pg-controls">
+        <button class="pg-arrow" onclick="taskPage=Math.max(1,taskPage-1);renderTodos()" ${taskPage===1?'disabled':''}>‹</button>
+        ${pageBtns}
+        <button class="pg-arrow" onclick="taskPage=Math.min(${totalPages},taskPage+1);renderTodos()" ${taskPage===totalPages?'disabled':''}>›</button>
+      </div>`;
+  } else if(pag) pag.innerHTML='';
 }
+
+function toggleTaskMenu(id,ev){
+  ev.stopPropagation();
+  const menu=document.getElementById('tm-'+id);
+  const isOpen=menu.style.display!=='none';
+  closeAllTaskMenus();
+  menu.style.display=isOpen?'none':'block';
+}
+function closeAllTaskMenus(){
+  document.querySelectorAll('.task-menu').forEach(m=>m.style.display='none');
+}
+document.addEventListener('click',()=>closeAllTaskMenus());
 
 // ══════════════════════════════════════════
 // REMINDERS
@@ -1662,13 +1851,11 @@ function renderReminders(){
   const list=document.getElementById('r-list');
   if(!arr.length){list.innerHTML=`<div class="card"><div class="empty"><div class="empty-icon">🔔</div><div class="empty-title">No reminders yet</div><div class="empty-sub">Set your first reminder above</div></div></div>`;return;}
 
-  // Sort: overdue first, then by datetime
   const sorted=[...arr].sort((a,b)=>{
     if(a.done!==b.done) return a.done?1:-1;
     return new Date(a.datetime)-new Date(b.datetime);
   });
 
-  // Group
   const overdue=sorted.filter(r=>!r.done&&new Date(r.datetime)<new Date());
   const upcoming=sorted.filter(r=>!r.done&&new Date(r.datetime)>=new Date());
   const done=sorted.filter(r=>r.done);
@@ -1715,14 +1902,12 @@ function addNote(){const title=document.getElementById('n-title').value.trim();i
 function editNote(id){const n=S.g('notes').find(x=>x.id===id);if(!n)return;document.getElementById('n-title').value=n.title;document.getElementById('n-body').value=n.body;document.getElementById('n-link').value=n.link||'';nEditId=id;document.getElementById('n-cancel-btn').style.display='inline-flex';window.scrollTo({top:0,behavior:'smooth'});}
 function cancelNEdit(){nEditId=null;document.getElementById('n-cancel-btn').style.display='none';['n-title','n-body','n-link'].forEach(id=>document.getElementById(id).value='');}
 function deleteNote(id){if(!confirm('Delete note?'))return;S.s('notes',S.g('notes').filter(n=>n.id!==id));renderNotes();}
-// ── READING TARGET ──
 function getReadTargets(){
-  const obj = S.go('read_targets'); // { date: { noteIds:[], done:{} } }
+  const obj = S.go('read_targets');
   const tds = today();
   if(!obj[tds]) obj[tds] = { noteIds:[], done:{} };
   return obj;
 }
-
 function toggleReadTarget(noteId){
   const arr = S.g('notes');
   const n = arr.find(x=>x.id===noteId); if(!n) return;
@@ -1734,7 +1919,6 @@ function toggleReadTarget(noteId){
   renderReadTargetBanner();
   renderNotes();
 }
-
 function toggleReadDone(noteId){
   const obj = getReadTargets(); const tds=today();
   obj[tds].done[noteId] = !obj[tds].done[noteId];
@@ -1742,7 +1926,6 @@ function toggleReadDone(noteId){
   renderReadTargetBanner();
   renderNotes();
 }
-
 function renderReadTargetBanner(){
   const wrap = document.getElementById('read-target-wrap'); if(!wrap) return;
   const obj = getReadTargets(); const tds=today();
@@ -1769,7 +1952,6 @@ function renderReadTargetBanner(){
     <div class="read-target-items">${items}</div>
   </div>`;
 }
-
 function renderNotes(){
   renderReadTargetBanner();
   const arr=S.g('notes').filter(n=>n.tab===notesTab);
@@ -1822,7 +2004,6 @@ function switchPlannerCtx(ctx, el){
   plannerCtx = ctx;
   document.querySelectorAll('#planner-ctx .seg-btn').forEach(b=>b.classList.remove('active'));
   if(el) el.classList.add('active');
-  // Update label
   const m = CTX_META[ctx];
   document.getElementById('planner-ctx-icon').textContent = m.icon;
   document.getElementById('planner-ctx-title').textContent = m.title;
@@ -1918,28 +2099,15 @@ function renderMisc(){
   list.innerHTML=arr.map(n=>`<div class="misc-row"><div class="misc-bullet"></div><div class="misc-body-wrap">${n.title?`<div class="misc-title">${esc(n.title)}</div>`:''} ${n.body?`<div class="misc-body">${esc(n.body)}</div>`:''}<div class="misc-date">${fmtD(n.created)}</div></div><div class="misc-actions"><button class="icon-btn edit" onclick="editMisc('${n.id}')">✎</button><button class="icon-btn" onclick="deleteMisc('${n.id}')">✕</button></div></div>`).join('');
 }
 
-
 // ══════════════════════════════════════════
 // DASHBOARD
 // ══════════════════════════════════════════
-const QUOTES = [
-  {text:"The secret of getting ahead is getting started.", src:"Mark Twain"},
-  {text:"Focus on being productive instead of busy.", src:"Tim Ferriss"},
-  {text:"Small daily improvements over time lead to stunning results.", src:"Robin Sharma"},
-  {text:"Your future is created by what you do today, not tomorrow.", src:"Robert Kiyosaki"},
-  {text:"Don't watch the clock; do what it does. Keep going.", src:"Sam Levenson"},
-  {text:"Energy and persistence conquer all things.", src:"Benjamin Franklin"},
-  {text:"The only way to do great work is to love what you do.", src:"Steve Jobs"},
-  {text:"It always seems impossible until it's done.", src:"Nelson Mandela"},
-];
-
 function renderDashboard(){
   const now = new Date();
   const tds = today();
   const hour = now.getHours();
   const mins = now.getMinutes();
 
-  // Greeting
   const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   document.getElementById('dash-greeting').textContent = greet;
 
@@ -1952,7 +2120,6 @@ function renderDashboard(){
   const reminders = S.g('reminders');
   const journal = S.g('journal');
 
-  // Overdue pill
   const overdue = reminders.filter(r=>!r.done && new Date(r.datetime)<now).length;
   const blocked = S.g('watch_items').filter(w=>w.status==='blocked').length;
   const overdueEl = document.getElementById('dash-overdue-pill');
@@ -1961,26 +2128,16 @@ function renderDashboard(){
   if(blocked>0) pills.push(`<span onclick="navTo('watch')" style="cursor:pointer;background:var(--red-bg);color:var(--red);font-size:11px;font-weight:600;padding:3px 10px;border-radius:3px;">🚫 ${blocked} blocked item${blocked>1?'s':''}</span>`);
   overdueEl.innerHTML = pills.join(' ');
 
-  // ── BUILD TIMELINE ITEMS ──
-  // 1. Tasks with a time set for today (or starred tasks with no time — place at top)
-  // 2. Journal entries for today (they have a start time)
-  // All merged and sorted by time
-
   const CAT_C = {Work:'#ff9f0a',Meeting:'#8b5cf6',Learning:'#2383e2',Exercise:'#0f7b6c',Personal:'#e03e3e',Admin:'#9b9b9b',Other:'#0b6e99'};
   const PRI_C = {high:'var(--red)',medium:'var(--orange)',low:'var(--green)'};
 
-  // Tasks: show all incomplete tasks, group by: has time today / starred no time / rest
   const allTasks = todos.filter(t => !t.done);
-  const timedTasks = allTasks.filter(t => t.time);     // have a time set — go on timeline
-  const starredNoTime = allTasks.filter(t => t.today && !t.time);  // starred, no time
-  // Dashboard only shows PLANNED tasks (have due date) that are not timed and not starred
-  // Only show on dashboard if due TODAY (not just any future due date)
+  const timedTasks = allTasks.filter(t => t.time);
+  const starredNoTime = allTasks.filter(t => t.today && !t.time);
   const otherTasks = allTasks.filter(t => t.due === tds && !t.time && !t.today);
 
-  // Journal entries today
   const todayJournal = journal.filter(e => e.date === tds);
 
-  // Merge timed tasks + journal + recurring into one timeline sorted by time
   const recurringItems = typeof getTodayRecurringItems === 'function' ? getTodayRecurringItems() : [];
   const timelineItems = [
     ...timedTasks.map(t => ({
@@ -1995,7 +2152,6 @@ function renderDashboard(){
     ...recurringItems
   ].sort((a,b) => a.sortKey.localeCompare(b.sortKey));
 
-  // Format time helper
   const fmtTime = t => {
     if(!t) return '';
     const [h,m] = t.split(':');
@@ -2004,25 +2160,19 @@ function renderDashboard(){
     return `${hr%12||12}:${mn} ${ampm}`;
   };
 
-  // Current time indicator position
   const currentTimeStr = `${String(hour).padStart(2,'0')}:${String(mins).padStart(2,'0')}`;
 
-  // Build HTML
   let html = '';
 
-  // ── TIMED SECTION ──
   if(timelineItems.length > 0){
     html += `<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Today's Timeline</div>`;
     html += `<div class="card" style="margin-bottom:20px;overflow:visible">`;
 
-    let pastDividerAdded = false;
     let futureDividerAdded = false;
 
     timelineItems.forEach((item, idx) => {
       const isPast = item.sortKey < currentTimeStr;
-      const isCurrent = !isPast && (timelineItems[idx-1]?.sortKey||'') < currentTimeStr && item.sortKey >= currentTimeStr;
 
-      // Add "NOW" divider before first future item
       if(!futureDividerAdded && !isPast){
         futureDividerAdded = true;
         html += `<div style="display:flex;align-items:center;gap:8px;padding:0 14px;margin:2px 0;">
@@ -2056,7 +2206,6 @@ function renderDashboard(){
           </div>
         </div>`;
       } else if(item.type === 'recurring') {
-        // Recurring task
         const priColor = PRI_C[item.pri] || 'var(--text3)';
         html += `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border2);${isPast?'opacity:0.45;':''}" onclick="navTo('todo')" class="dash-row-item">
           <div style="min-width:54px;text-align:right;flex-shrink:0;padding-top:2px">
@@ -2076,7 +2225,6 @@ function renderDashboard(){
           </div>
         </div>`;
       } else {
-        // Journal entry
         const catColor = CAT_C[item.cat] || '#ccc';
         html += `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border2);${isPast?'opacity:0.55;':''}" onclick="navTo('journal')" class="dash-row-item">
           <div style="min-width:54px;text-align:right;font-size:11px;font-weight:600;color:var(--text3);padding-top:2px;flex-shrink:0">${fmtTime(item.time)}</div>
@@ -2092,7 +2240,6 @@ function renderDashboard(){
       }
     });
 
-    // If all items were in the past, show NOW at the end
     if(!futureDividerAdded){
       html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 14px;">
         <div style="width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
@@ -2103,7 +2250,6 @@ function renderDashboard(){
     html += `</div>`;
   }
 
-  // ── STARRED (no time) ──
   if(starredNoTime.length){
     html += `<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">Today's Focus</div>`;
     html += `<div class="card" style="margin-bottom:20px">`;
@@ -2117,7 +2263,6 @@ function renderDashboard(){
     html += `</div>`;
   }
 
-  // ── ALL OTHER TASKS (no time, not starred) — grouped by tab ──
   if(otherTasks.length){
     ['office','personal'].forEach(tab => {
       const tabTasks = otherTasks.filter(t => t.tab === tab);
@@ -2138,12 +2283,10 @@ function renderDashboard(){
     });
   }
 
-  // Empty state
   if(!timelineItems.length && !starredNoTime.length && !otherTasks.length){
     html += `<div class="card"><div class="empty"><div class="empty-icon" style="font-size:20px;opacity:0.3">✓</div><div class="empty-title">Nothing planned for today</div><div class="empty-sub">Go to Tasks and star ☆ what you want to work on today</div></div></div>`;
   }
 
-  // ── WATCH LIST SUMMARY ──
   const watchItems = S.g('watch_items').filter(w => w.status !== 'done');
   if(watchItems.length){
     const statusOrder = {blocked:0,'at-risk':1,pending:2,'on-track':3};
@@ -2182,12 +2325,11 @@ function renderDashboard(){
   renderDashCalendar();
 }
 
-
 // ══════════════════════════════════════════
-// DASHBOARD CALENDAR (Day / Week view, like a Notion calendar)
+// DASHBOARD CALENDAR (Day / Week view)
 // ══════════════════════════════════════════
 let dashViewMode = 'day';
-let dashOffset = 0; // days (day view) or weeks (week view) relative to today
+let dashOffset = 0;
 const CAL_HOUR_START = 6;
 const CAL_HOUR_END = 22;
 const CAL_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -2295,7 +2437,7 @@ function renderDashCalendar(){
   renderCalTray(dates);
 
   const rangeStart = CAL_HOUR_START*60, rangeEnd = CAL_HOUR_END*60;
-  const rowH = getCalRowH(); // px per hour
+  const rowH = getCalRowH();
   const hourCount = CAL_HOUR_END-CAL_HOUR_START;
   const gridH = hourCount*rowH;
   const tds = toDS(new Date());
@@ -2350,7 +2492,6 @@ function renderDashCalendar(){
   grid.innerHTML = `<div class="cal-gutter-wrap"><div class="cal-day-head" style="visibility:hidden">&nbsp;</div>${gutter}</div>${cols}`;
 }
 
-// ── Drag & drop: place / move tasks on the calendar ──
 let calDragId = null;
 function calDragStart(e, id){
   calDragId = id;
@@ -2385,7 +2526,6 @@ function calDrop(e, ds){
   renderDashCalendar();
 }
 
-// ── Resize: drag the bottom handle to change a task's duration ──
 let calResizing = null;
 function calResizeStart(e, id){
   e.preventDefault();
@@ -2425,18 +2565,11 @@ function calResizeEnd(){
   renderDashCalendar();
 }
 
-
 // ══════════════════════════════════════════
 // DAILY LOG
 // ══════════════════════════════════════════
 let ltEditId = null;
 let leEditId = null;
-
-const DEFAULT_TRACKERS = [
-  {id:'t_weight', name:'Weight', unit:'kg', icon:'⚖️'},
-  {id:'t_sleep',  name:'Sleep',  unit:'hrs', icon:'😴'},
-  {id:'t_mood',   name:'Mood',   unit:'/10', icon:'😊'},
-];
 
 function getTrackers(){ const arr=S.g('log_trackers'); return arr.length ? arr : []; }
 
@@ -2491,7 +2624,6 @@ function renderLogTrackers(){
     el.innerHTML=`<div style="padding:16px 20px;font-size:13px;color:var(--text3);font-style:italic">No trackers yet — add one below to get started</div>`;
     return;
   }
-  // Get last value for each tracker
   const entries = S.g('log_entries').sort((a,b)=>b.date.localeCompare(a.date));
   el.innerHTML = trackers.map(t=>{
     const lastEntry = entries.find(e=>e.values&&e.values[t.id]!==undefined&&e.values[t.id]!=='');
@@ -2519,7 +2651,6 @@ function renderLogEntryFields(){
     el.innerHTML=`<div style="font-size:13px;color:var(--text3);margin-bottom:8px;font-style:italic">Add trackers above first, then log values here</div>`;
     return;
   }
-  // Get existing values if editing
   const editId = document.getElementById('le-edit-id').value;
   const existing = editId ? (S.g('log_entries').find(e=>e.id===editId)||{}) : {};
   el.innerHTML=`<div class="field-grid">${trackers.map(t=>`
@@ -2551,7 +2682,6 @@ function addLogEntry(){
     document.getElementById('le-cancel-btn').style.display='none';
     leEditId=null;
   } else {
-    // Check if entry for this date already exists — merge
     const existing = entries.findIndex(e=>e.date===date);
     if(existing>=0){
       if(!confirm(`An entry for ${fmtD(date)} already exists. Merge/overwrite it?`)) return;
@@ -2562,7 +2692,6 @@ function addLogEntry(){
   }
   S.s('log_entries', entries);
 
-  // Reset fields
   trackers.forEach(t=>{ const el=document.getElementById('lf-'+t.id); if(el) el.value=''; });
   document.getElementById('le-note').value='';
   renderLogTrackers();
@@ -2669,7 +2798,6 @@ function initLog(){
   renderLogEntries();
 }
 
-
 // ══════════════════════════════════════════
 // RECURRING TASKS
 // ══════════════════════════════════════════
@@ -2695,8 +2823,8 @@ function addRecurringTask(){
     name,
     cat: document.getElementById('rt-cat').value,
     pri: document.getElementById('rt-pri').value,
-    schedule,    // {mon:'09:00', tue:'09:30', ...}
-    endSchedule, // {mon:'10:00', tue:'10:30', ...}
+    schedule,
+    endSchedule,
     active: true,
     created: today()
   };
@@ -2766,7 +2894,7 @@ function renderRecurringTasks(){
   if(!arr.length){
     list.className='';
     list.style.cssText='';
-    list.innerHTML=`<div class="empty" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:40px 24px"><div class="empty-icon" style="font-size:20px;opacity:0.3">↻</div><div class="empty-title">No recurring tasks</div><div class="empty-sub">Add tasks that repeat on a weekly schedule</div></div>`;
+    list.innerHTML=`<div class="empty" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:40px 24px"><div class="empty-icon" style="font-size:20px;opacity:0.3">↻</div><div class="empty-title">No recurring tasks</div><div class="empty-sub">Add tasks that repeat on a weekly schedule</div></div>`;
     return;
   }
   const fmtTime=t=>{if(!t)return'—';const[h,m]=t.split(':');const hr=+h;return `${hr%12||12}:${m}${hr>=12?'pm':'am'}`;}
@@ -2799,11 +2927,10 @@ function renderRecurringTasks(){
     </div>`).join('');
 }
 
-// Called by dashboard to get today's recurring tasks
 function getTodayRecurringItems(){
   const arr = S.g('recurring_tasks');
-  const dow = new Date().getDay(); // 0=Sun,1=Mon...6=Sat
-  const dayMap = [6,0,1,2,3,4,5]; // convert JS day to our mon=0 index
+  const dow = new Date().getDay();
+  const dayMap = [6,0,1,2,3,4,5];
   const dayKey = DAYS_SHORT[dayMap[dow]];
   return arr
     .filter(t => t.active!==false && t.schedule[dayKey])
@@ -2818,7 +2945,6 @@ function getTodayRecurringItems(){
       pri: t.pri
     }));
 }
-
 
 // ══════════════════════════════════════════
 // WATCH LIST
@@ -2927,7 +3053,6 @@ function renderWatchList(){
   let arr=S.g('watch_items');
   if(watchFilter!=='all') arr=arr.filter(x=>x.status===watchFilter);
   arr.sort((a,b)=>{
-    // done goes last, blocked first
     const ord={blocked:0,'at-risk':1,pending:2,'on-track':3,done:4};
     return (ord[a.status]||2)-(ord[b.status]||2);
   });
@@ -2966,7 +3091,6 @@ function renderWatchList(){
       <div class="watch-body" id="wb-${item.id}" style="display:none">
         ${item.notes?`<div style="font-size:13px;color:var(--text3);margin-bottom:12px;line-height:1.5;padding:8px 10px;background:var(--bg3);border-radius:3px">${esc(item.notes)}</div>`:''}
 
-        <!-- Status buttons -->
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
           <span style="font-size:11px;color:var(--text4);align-self:center">Status:</span>
           ${Object.entries(STATUS_META).map(([key,sm])=>`
@@ -2977,13 +3101,11 @@ function renderWatchList(){
             </button>`).join('')}
         </div>
 
-        <!-- Priority & due -->
         <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
           <span class="badge ${priMap[item.pri]||'badge-muted'}">${item.pri} priority</span>
           ${item.due?`<span class="badge badge-muted">Due ${fmtD(item.due)}</span>`:''}
         </div>
 
-        <!-- Updates -->
         <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Progress Updates</div>
         ${updates.length?`<div style="margin-bottom:10px">${updates.map(u=>`
           <div class="watch-update-row">
@@ -2995,7 +3117,6 @@ function renderWatchList(){
             <button class="icon-btn" onclick="deleteWatchUpdate('${item.id}','${u.id}')" style="opacity:0.4;font-size:10px">✕</button>
           </div>`).join('')}</div>`:'<div style="font-size:12px;color:var(--text4);margin-bottom:10px;font-style:italic">No updates yet</div>'}
 
-        <!-- Add update -->
         <div class="watch-add-update">
           <input type="text" id="wu-input-${item.id}" placeholder="Add a progress update..." style="flex:1;font-size:13px"
             onkeydown="if(event.key==='Enter'){addWatchUpdate('${item.id}');}">
@@ -3010,13 +3131,10 @@ function renderWatchList(){
 // EXPORT / IMPORT
 // ══════════════════════════════════════════
 const DATA_KEYS = ['journal','habits','todos','reminders','notes','misc','planner_year','planner_week','log_trackers','log_entries','read_targets','recurring_tasks','watch_items'];
-// Note: planner_year stores keys like 'work_2025-0', 'personal_2025-0' etc
-// planner_week stores keys like 'work_week_2025-01-06', 'personal_week_2025-01-06' etc
 
 function exportData(){
   const data = { version: 1, exported: new Date().toISOString(), data: {} };
   DATA_KEYS.forEach(k => {
-    // Prefer live cache from Supabase, fall back to localStorage
     if(DB_READY && CACHE[k] !== undefined){
       data.data[k] = CACHE[k];
     } else {
@@ -3039,21 +3157,17 @@ function importData(event){
   reader.onload = e => {
     try {
       const parsed = JSON.parse(e.target.result);
-      // Support both raw format and wrapped {version, data} format
       const src = parsed.version ? parsed.data : parsed;
       const keys = Object.keys(src).filter(k => DATA_KEYS.includes(k));
       if(!keys.length){ alert('Invalid backup file — no recognisable data found.'); return; }
       if(!confirm(`Import ${keys.length} data sections?\n\nThis will REPLACE your current data with the backup.\n\nSections: ${keys.join(', ')}`)) return;
-      // Save each key to Supabase + cache
       const savePromises = keys.map(k => { CACHE[k]=src[k]; return dbSave(k, src[k]); });
       Promise.all(savePromises).then(()=>console.log('Import saved to Supabase'));
-      // Re-render everything
       renderJournal(); renderHabits(); renderTodos(); renderReminders(); renderNotes(); renderPlanner(); renderMisc(); updateRemBadge();
       alert(`✅ Import successful! ${keys.length} sections restored.`);
     } catch(err) {
       alert('Failed to read file. Make sure it is a valid MySpace JSON backup.');
     }
-    // Reset file input so same file can be re-imported if needed
     event.target.value = '';
   };
   reader.readAsText(file);
