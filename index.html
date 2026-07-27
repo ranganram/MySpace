@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     MY SPACE — Build v1.2 (Fix: Grid view task cards)
+     Generated: 2026-07-27
+     ============================================================ -->
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -592,6 +596,23 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   .task-row-pills{max-width:100%;justify-content:flex-start;margin-top:6px;}
   .task-row-card{flex-wrap:wrap;}
 }
+
+/* Grid view: restack each card as title-row + full-width wrapping pill row */
+#t-list.task-grid .task-row-card{
+  display:grid;
+  grid-template-columns:auto auto 1fr auto;
+  grid-template-areas:
+    "check star content menu"
+    "pills pills pills pills";
+  column-gap:8px;
+  row-gap:8px;
+  align-items:start;
+}
+#t-list.task-grid .t-check{grid-area:check;margin-top:2px;}
+#t-list.task-grid .star-btn{grid-area:star;}
+#t-list.task-grid .task-row-content{grid-area:content;min-width:0;}
+#t-list.task-grid .task-row-pills{grid-area:pills;max-width:100%;justify-content:flex-start;}
+#t-list.task-grid .task-row-menu-wrap{grid-area:menu;}
 </style>
 </head>
 <body>
@@ -1728,8 +1749,9 @@ function renderTodos(){
     return `<span class="tpill tpill-muted">✓ ${done}/${total}</span>`;
   };
 
+  list.className = taskView==='grid' ? 'task-grid' : 'task-list';
   list.style.cssText = taskView==='grid'
-    ? 'display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px'
+    ? 'display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px'
     : 'display:flex;flex-direction:column;gap:8px';
 
   list.innerHTML=pageItems.map(t=>{
@@ -1738,7 +1760,7 @@ function renderTodos(){
       <div class="task-row-bar" style="background:${barColor}"></div>
       <div class="t-check ${t.done?'done':''}" onclick="toggleDone('${t.id}')" style="flex-shrink:0">${t.done?'✓':''}</div>
       <button class="star-btn ${t.today?'on':'off'}" onclick="toggleToday('${t.id}')" title="${t.today?'Remove from today':'Add to today'}">${t.today?'★':'☆'}</button>
-      <div style="flex:1;min-width:0">
+      <div class="task-row-content" style="flex:1;min-width:0">
         <input type="text" class="inline-edit-text task-row-title" value="${esc(t.text)}" style="${t.done?'text-decoration:line-through;color:var(--text3)':''}" onblur="saveInlineTodo('${t.id}','text',this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
         ${t.notes?`<div style="font-size:11.5px;color:var(--text3);margin-top:2px">${esc(t.notes)}</div>`:''}
         ${renderSubtasksMini(t)? `<div style="margin-top:4px">${renderSubtasksMini(t)}</div>` : ''}
