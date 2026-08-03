@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- ============================================================
-     MY SPACE — Build v1.4 (Compact task rows)
+     MY SPACE — Build v1.5 (Habit monthly targets dashboard)
      Generated: 2026-07-27
      ============================================================ -->
 <html lang="en" data-theme="light">
@@ -210,6 +210,21 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .streak-track{flex:2;height:7px;background:var(--bg3);border-radius:100px;overflow:hidden;}
 .streak-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--teal));border-radius:100px;transition:width 0.6s ease;}
 .streak-pct{min-width:44px;text-align:right;font-size:14px;font-weight:800;color:var(--green);}
+
+/* ── HABIT TARGETS DASHBOARD ── */
+.htarget-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.htarget-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
+.htarget-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--htc,var(--accent));}
+.htarget-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
+.htarget-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.htarget-status{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+.htarget-nums{display:flex;align-items:baseline;gap:4px;margin-bottom:8px;}
+.htarget-count{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;}
+.htarget-total{font-size:13px;color:var(--text3);font-weight:600;}
+.htarget-track{height:6px;background:var(--bg3);border-radius:100px;overflow:hidden;margin-bottom:6px;}
+.htarget-fill{height:100%;border-radius:100px;transition:width 0.5s ease;}
+.htarget-sub{font-size:11px;color:var(--text3);}
+.htarget-empty{font-size:13px;color:var(--text3);padding:20px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);}
 
 /* ── TASKS ── */
 .today-focus{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;}
@@ -799,6 +814,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="page" id="page-habits">
       <div class="page-title">Habits</div>
       <div class="page-sub">Build consistency, one day at a time</div>
+
+      <div id="habit-targets-dash" style="margin-bottom:20px"></div>
+
       <div class="card">
         <div class="card-padded">
           <div class="field-grid">
@@ -806,6 +824,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
             <div class="field"><label>Category</label>
               <select id="h-cat"><option>Health</option><option>Learning</option><option>Work</option><option>Mindfulness</option><option>Other</option></select>
             </div>
+            <div class="field"><label>Monthly Target (sessions/days)</label><input type="number" id="h-target" placeholder="e.g. 12" min="0"></div>
+            <div class="field"><label>Success Goal %</label><input type="number" id="h-target-pct" placeholder="80" min="1" max="100"></div>
           </div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="addHabit()">Add Habit</button>
@@ -1449,18 +1469,22 @@ let habitOffset=0;
 function addHabit(){
   const name=document.getElementById('h-name').value.trim();
   if(!name){alert('Enter habit name');return;}
+  const target=parseInt(document.getElementById('h-target').value)||0;
+  const targetPct=parseInt(document.getElementById('h-target-pct').value)||80;
   const arr=S.g('habits');
   if(hEditId){
     const h=arr.find(x=>x.id===hEditId);
-    if(h){h.name=name;h.cat=document.getElementById('h-cat').value;}
+    if(h){h.name=name;h.cat=document.getElementById('h-cat').value;h.target=target;h.targetPct=targetPct;}
     hEditId=null;
     const cancelBtn=document.getElementById('h-cancel-btn');
     if(cancelBtn) cancelBtn.style.display='none';
   } else {
-    arr.push({id:uid(),name,cat:document.getElementById('h-cat').value,checks:{}});
+    arr.push({id:uid(),name,cat:document.getElementById('h-cat').value,checks:{},target,targetPct});
   }
   S.s('habits',arr);
   document.getElementById('h-name').value='';
+  document.getElementById('h-target').value='';
+  document.getElementById('h-target-pct').value='';
   renderHabits();
 }
 function toggleHabit(id,ds){const arr=S.g('habits');const h=arr.find(x=>x.id===id);if(h){h.checks[ds]=!h.checks[ds];S.s('habits',arr);renderHabits();}}
@@ -1470,6 +1494,8 @@ function editHabit(id){
   const h=S.g('habits').find(x=>x.id===id);if(!h)return;
   document.getElementById('h-name').value=h.name;
   document.getElementById('h-cat').value=h.cat;
+  document.getElementById('h-target').value=h.target||'';
+  document.getElementById('h-target-pct').value=h.targetPct||80;
   hEditId=id;
   const cancelBtn=document.getElementById('h-cancel-btn');
   if(cancelBtn) cancelBtn.style.display='inline-flex';
@@ -1478,6 +1504,8 @@ function editHabit(id){
 function cancelHEdit(){
   hEditId=null;
   document.getElementById('h-name').value='';
+  document.getElementById('h-target').value='';
+  document.getElementById('h-target-pct').value='';
   const cancelBtn=document.getElementById('h-cancel-btn');
   if(cancelBtn) cancelBtn.style.display='none';
 }
@@ -1489,10 +1517,55 @@ function renderHabits(){
   const habits=S.g('habits');const tds=today();
   const days=Array.from({length:dim},(_,i)=>i+1);
   const ds=d=>`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  renderHabitTargets();
   const list=document.getElementById('h-list');
   if(!habits.length){list.innerHTML=`<div class="empty"><div class="empty-icon">🔁</div><div class="empty-title">No habits yet</div><div class="empty-sub">Add your first habit above</div></div>`;document.getElementById('h-stats').innerHTML='';return;}
   list.innerHTML=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><div style="min-width:max-content"><div class="habit-header"><div class="habit-header-name">Habit</div><div class="habit-header-days">${days.map(d=>`<div class="hh-day" style="${ds(d)===tds?'color:var(--accent)':''}">${d}</div>`).join('')}</div><div class="habit-header-pct">Rate</div><div style="width:32px;margin-left:10px"></div></div>${habits.map(h=>{const cnt=days.filter(d=>!!h.checks[ds(d)]).length;const rate=Math.round(cnt/dim*100);const col=rate>=70?'var(--green)':rate>=40?'var(--orange)':'var(--red)';return `<div class="habit-row"><div class="habit-info"><div class="habit-name-t">${esc(h.name)}</div><div class="habit-cat-t">${h.cat}</div></div><div class="habit-days-scroll">${days.map(d=>{const d_=ds(d);const done=!!h.checks[d_];const isT=d_===tds;return `<div class="hd ${done?'done':''} ${isT?'today':''}" onclick="toggleHabit('${h.id}','${d_}')">${done?'✓':''}</div>`;}).join('')}</div><div class="habit-pct" style="color:${col}">${rate}%</div><div class="habit-del" style="display:flex;gap:6px"><button class="icon-btn edit" onclick="editHabit('${h.id}')">✎</button><button class="icon-btn" onclick="deleteHabit('${h.id}')">✕</button></div></div>`;}).join('')}</div></div>`;
   document.getElementById('h-stats').innerHTML=habits.map(h=>{const cnt=days.filter(d=>!!h.checks[ds(d)]).length;const rate=Math.round(cnt/dim*100);return `<div class="streak-row"><div class="streak-name">${esc(h.name)}</div><div class="streak-track"><div class="streak-fill" style="width:${rate}%"></div></div><div class="streak-pct">${rate}%</div></div>`;}).join('');
+}
+
+// ── HABIT MONTHLY TARGETS DASHBOARD ──
+function renderHabitTargets(){
+  const wrap=document.getElementById('habit-targets-dash');
+  if(!wrap) return;
+  const now=new Date();
+  const yr=now.getFullYear(), mo=now.getMonth();
+  const dim=new Date(yr,mo+1,0).getDate();
+  const dayOfMonth=now.getDate();
+  const ds=d=>`${yr}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const habits=S.g('habits').filter(h=>h.target && h.target>0);
+  if(!habits.length){
+    wrap.innerHTML=`<div class="htarget-empty">Set a monthly target on any habit below to see progress here.</div>`;
+    return;
+  }
+  const cards=habits.map(h=>{
+    const days=Array.from({length:dim},(_,i)=>i+1);
+    const doneCount=days.filter(d=>d<=dayOfMonth && !!h.checks[ds(d)]).length;
+    const target=h.target;
+    const goalPct=h.targetPct||80;
+    const achievedPct=Math.round((doneCount/target)*100);
+    const expectedByNow=target*(dayOfMonth/dim);
+    let statusLabel, statusColor;
+    if(doneCount>=target){ statusLabel='Complete'; statusColor='var(--green)'; }
+    else if(doneCount>=expectedByNow){ statusLabel='On Track'; statusColor='var(--green)'; }
+    else if(doneCount>=expectedByNow*0.7){ statusLabel='Slightly Behind'; statusColor='var(--orange)'; }
+    else { statusLabel='Behind'; statusColor='var(--red)'; }
+    const barPct=Math.min(100,achievedPct);
+    const meetsGoal = achievedPct>=goalPct;
+    return `<div class="htarget-card" style="--htc:${statusColor}">
+      <div class="htarget-top">
+        <div class="htarget-name">${esc(h.name)}</div>
+        <div class="htarget-status" style="background:${statusColor}20;color:${statusColor}">${statusLabel}</div>
+      </div>
+      <div class="htarget-nums">
+        <span class="htarget-count" style="color:${statusColor}">${doneCount}</span>
+        <span class="htarget-total">/ ${target} this month</span>
+      </div>
+      <div class="htarget-track"><div class="htarget-fill" style="width:${barPct}%;background:${statusColor}"></div></div>
+      <div class="htarget-sub">Goal ${goalPct}%+ · Currently ${achievedPct}% ${meetsGoal?'✓':''}</div>
+    </div>`;
+  }).join('');
+  wrap.innerHTML=`<div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">📊 Monthly Targets — ${['January','February','March','April','May','June','July','August','September','October','November','December'][mo]}</div><div class="htarget-grid">${cards}</div>`;
 }
 
 // ══════════════════════════════════════════
